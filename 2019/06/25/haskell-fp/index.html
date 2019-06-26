@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。 在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。">
+<meta name="keywords" content="CS,haskell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Haskell簡介[0]--什麼是函式程式設計？">
+<meta property="og:url" content="http://yoursite.com/2019/06/25/haskell-fp/index.html">
+<meta property="og:site_name" content="Erd1 nerd1">
+<meta property="og:description" content="Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。 在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:updated_time" content="2019-06-26T08:47:29.066Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Haskell簡介[0]--什麼是函式程式設計？">
+<meta name="twitter:description" content="Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。 在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/06/25/haskell-fp/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Haskell簡介[0]--什麼是函式程式設計？ | Erd1 nerd1</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Erd1 nerd1</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/25/haskell-fp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="erd1">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Erd1 nerd1">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Haskell簡介[0]--什麼是函式程式設計？
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-06-25 19:51:25" itemprop="dateCreated datePublished" datetime="2019-06-25T19:51:25+08:00">2019-06-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-06-26 16:47:29" itemprop="dateModified" datetime="2019-06-26T16:47:29+08:00">2019-06-26</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。<br>
+在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。</p>
+<a id="more"></a>
+<h1 id="回到程式語言的歷史">回到程式語言的歷史</h1>
+<p>從程式語言被發明開始，程式的邏輯便在不斷變遷，先後出現了以下幾種典範(paradigm)：</p>
+<ul>
+<li><strong>指令式程式設計</strong>：最直觀的想法，直接對CPU下達各種指令，例如Assembly。</li>
+<li><strong>結構化程式設計</strong>：為了避免<code>goto</code>，加入了迴圈、選擇等概念。例如Pascal。</li>
+<li><strong>程序式程式設計</strong>：將結構化的概念加以延伸，將大問題分化為許多小問題，利用子程式(subroutine)或函數進行處理，例如C語言。</li>
+<li><strong>物件導向程式設計</strong>：在程式碼越來越長的情況下，為了減少開發和維護的困難，我們試圖將城市的各個功能去耦合。於是人們將小問題封裝成一個一個的物件，若能好好做到SOLID，那你只需要在意物件的介面(Interface)，不需要管他的實作。例如Java。</li>
+</ul>
+<p>但在現今，物件導向卻又遇到了瓶頸。在執行同步的程式時，由於每一個方法都有可能會存取或修改屬性，故有可能導致競爭條件(race condition)的產生。而解決這個問題最簡單的方法就是利用純函數的特性。</p>
+<h2 id="純函數">純函數</h2>
+<ul>
+<li>相同的輸入會導致相同的輸出，與其他隱藏訊息、I/O外部輸入無關。</li>
+<li>不能有任何函數副作用，如更改輸入值以外事件、I/O輸出等。</li>
+</ul>
+<p>由於兩個函數之前不會有任何交互影響，那自然也不會有競爭條件的發生。也因此，目前許多主流技術都吸收了不少FP的概念。例如Redux, RxJS, Swift等各種語言/函式庫都一定程度地受到了FP的影響。</p>
+<p>但以上討論僅止於他在商業上的應用。關於FP背後概念的發展歷史，請參閱下一篇文。</p>
+<h1 id="函式程式設計的特性">函式程式設計的特性</h1>
+<p>以下可能會用一些Haskell的程式碼，不過應該猜得到它是什麼意思（吧。</p>
+<h2 id="第一等函數與高階函數">第一等函數與高階函數</h2>
+<p>所謂第一類物件，指的是支援以下操作的物件(摘自維基百科)：</p>
+<ul>
+<li>可以被存入變數或其他結構</li>
+<li>可以被作為參數傳遞給其他函數</li>
+<li>可以被作為函數的返回值</li>
+<li>可以在執行期創造，而無需完全在設計期全部寫出</li>
+<li>即使沒有被繫結至某一名稱，也可以存在</li>
+</ul>
+<p>而被視為第一類物件的函數稱為第一類函數或頭等函數。<br>
+高階函數指則的是以函數作為引數或回傳值的函數。<br>
+其實除了純函式程式語言以外，其實大多數程式語言都有第一等函數與高階函數。</p>
+<h2 id="幾乎-所有函數都是純函數">(幾乎)所有函數都是純函數</h2>
+<p>純函數的定義如前一節所述。由於純函數的特性，編譯器可以做以下的優化而不用擔心程式出錯：</p>
+<ul>
+<li>
+<p>如果一個函數的返回值不被用到，則他不需要被計算。</p>
+</li>
+<li>
+<p><strong>記憶化</strong>(memoization)：儲存大計算量函數的返回值，並在需要的時候從緩存中提取數值。</p>
+</li>
+<li>
+<p><strong>消除公共子表達式</strong>(<abbr title="Common Subexpression Elimination">CSE</abbr>)：<br>
+若函式中有重複的子表達式，則可以只計算一次。</p>
+</li>
+<li>
+<p><strong>平行處理</strong>(parallelism)：如前一節所述，排程時不需利用mutex等黑科技，畢竟兩個不同的函數運行是獨立的。</p>
+</li>
+<li>
+<p><strong>deforestation</strong>：可以將求值過程中的樹狀結構（包含串列）去除或省略。例如以下程式碼<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+  <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">all</span> p xs = and (map p xs)</span><br></pre></td></tr></table></figure>
+<p>的計算途中會產生一個串列<code>map p xs</code>，但實際上在計算時可以每計算一個<code>p x</code>就做一次<code>and</code>，便不需要中間的串列。</p>
+</li>
+<li>
+<p><strong>懶惰求值</strong>：<a href="#lazy">如後述</a></p>
+</li>
+</ul>
+<p>至於為什麼是「幾乎」呢？從純函數的定義你會發現，他不允許I/O的存在。至於Haskell要如何處理I/O，又不損失純函數特性的方法，應會在之後介紹單子(Monad)時提到。</p>
+<h2 id="沒有變數與賦值">沒有變數與賦值</h2>
+<p>從純函數的定義，你可以發現既然不會改變任何變數，那變數就沒有存在的必要了。在純函數程式語言中，只會有定義，沒有賦值，因此定義皆為常數。</p>
+<h2 id="柯里化-currify">柯里化 (currify)</h2>
+<p>事實上在包含Haskell在內的大多數函式程式語言，皆僅有單變數函數。那要如何達到多變數函數的效果呢？</p>
+<p>以整數加法為例，首先我們先來看看一般定義中，<code>+</code>的型別。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(+) :: <span class="type">Int</span>, <span class="type">Int</span> -&gt; <span class="type">Int</span></span><br></pre></td></tr></table></figure>
+<p>但在Haskell裡，我們只能一次給一個參數。當傳入一個參數時，他的型別會變成什麼呢？</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(+<span class="number">3</span>) :: <span class="type">Int</span> -&gt; <span class="type">Int</span></span><br></pre></td></tr></table></figure>
+<p>當傳入一個參數<code>3</code>時，他變成了一個單變數函數，將任何數字<code>n</code>打到<code>n+3</code>。由此可知，<code>+</code>其實也可以視為一個接收<code>Int</code>，回傳一個<code>Int</code>打到<code>Int</code>的函數。因此在Haskell中，<code>+</code>實際上的型別是<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(+) :: <span class="type">Int</span> -&gt; (<span class="type">Int</span> -&gt; <span class="type">Int</span>)</span><br></pre></td></tr></table></figure>
+<p><br>
+你可以發現，任何一個接收型別<code>a</code>與<code>b</code>並回傳<code>c</code>的函數的型別會是<code>a -&gt; b -&gt; c</code><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>。這個將多變數函數以單變數函數表示的方法就稱為柯里化。</p>
+<h2 id="懶惰求值-lazy-evaluating-a-id-lazy-a">懶惰求值(lazy evaluating) <a id="lazy"></a></h2>
+<p>大多數非函式語言的求值策略都是嚴格求值，亦即在呼叫函數前，會先將其引數的值計算完畢。但大多數函式程式語言採用的是懶惰求值，此時只會在需要此值的時候求值。例如以下的程式碼中，</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">length</span> [<span class="number">1</span> `div` <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>會回傳<code>1</code>。這是因為在計算<code>length</code>時並不會需要用到串列內的值，因此不會被求值。但當你執行</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span> `div` <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>卻會得到<code>*** Exception: divide by zero</code>。因為這時需要串列內的值了。此時串列內的值才會被計算。這種求值方法允許了無限長的串列的存在，例如以下程式碼：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">take</span> <span class="number">5</span> (map (*<span class="number">3</span>) [<span class="number">1</span>,<span class="number">2.</span>.])</span><br></pre></td></tr></table></figure>
+<p>會終止，並回傳<code>[3,6,9,12,15]</code>。</p>
+<h1 id="結語">結語</h1>
+<blockquote>
+<p>明明下禮拜就要出國了還在做這種事= =<br>
+真的有夠可悲。</p>
+</blockquote>
+<p>這就是第一（零？）篇Haskell簡介了。下一次的內容基本上會著重在形式系統、λ運算跟組合子邏輯，可能會比較數學（？。<br>
+也可能不會，畢竟作者數學不太好ＱＱ。<br>
+除非有特殊的參考資料，否則本系列的文大概都不會附，畢竟大部分的內容都會是從英文維基跟haskell的原始碼生出來的。<br>
+希望我不要棄坑。</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>若<code>xs</code>中的每個元素都滿足<code>p</code>，則<code>all p xs</code>回傳<code>True</code>，否則回傳<code>False</code>。其中<code>xs</code>是一個串列，<code>p</code>是一個謂語。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>事實上並非如此，真正的型別會是 <code>(+) :: Num a =&gt; a -&gt; a -&gt; a</code>，不過為了說明方便就先假設是文中的樣子了 <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>在Haskell中<code>(-&gt;)</code>是右結合的，因此括號可以省略 <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/CS/" rel="tag"># CS</a>
+          
+            <a href="/tags/haskell/" rel="tag"># haskell</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/25/hello-blog/" rel="next" title="Hello, Blog">
+                <i class="fa fa-chevron-left"></i> Hello, Blog
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">erd1</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#回到程式語言的歷史"><span class="nav-number">1.</span> <span class="nav-text">回到程式語言的歷史</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#純函數"><span class="nav-number">1.1.</span> <span class="nav-text">純函數</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函式程式設計的特性"><span class="nav-number">2.</span> <span class="nav-text">函式程式設計的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一等函數與高階函數"><span class="nav-number">2.1.</span> <span class="nav-text">第一等函數與高階函數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#幾乎-所有函數都是純函數"><span class="nav-number">2.2.</span> <span class="nav-text">(幾乎)所有函數都是純函數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#沒有變數與賦值"><span class="nav-number">2.3.</span> <span class="nav-text">沒有變數與賦值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#柯里化-currify"><span class="nav-number">2.4.</span> <span class="nav-text">柯里化 (currify)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#懶惰求值-lazy-evaluating-a-id-lazy-a"><span class="nav-number">2.5.</span> <span class="nav-text">懶惰求值(lazy evaluating) </span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結語"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">erd1</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
