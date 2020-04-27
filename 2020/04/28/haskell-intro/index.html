@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-tw">
 <meta property="og:image" content="https://www.haskell.org/onlinereport/haskell2010/haskell2x.png">
 <meta property="og:image" content="http://s3.amazonaws.com/lyah/listmonster.png">
-<meta property="og:updated_time" content="2020-04-27T16:35:48.208Z">
+<meta property="og:updated_time" content="2020-04-27T18:48:15.480Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Haskell簡介[1]--Haskell簡介（">
 <meta name="twitter:description" content="balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對 因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？ 預設是下一篇把拉里拉雜的函式語法講完，以及在Prelude[1]裡面的各種神奇資料結構。 之後就可以開始玩有趣的東西了&amp;gt;&amp;lt; 不過依照一年一篇的速度不知道那是什麼時候了Q">
@@ -332,9 +332,13 @@
                 
               
 
-              <time title="Created: 2020-04-28 00:35:48" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:48+08:00">2020-04-28</time>
+              <time title="Created: 2020-04-28 00:35:48 / Modified: 02:48:15" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:48+08:00">2020-04-28</time>
             
 
+            
+              
+
+              
             
           </span>
 
@@ -501,6 +505,7 @@
 例如<code>[i*j | i &lt;- [1..10], j &lt;- [1..10]]</code>就是<code>concat $ map (\i -&gt; map (\j -&gt; i*j) [1..10]) [1..10]</code>的語法糖。<br>
 而在串列生成時也可以做篩選(<code>filter</code>)，例如</p>
  <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Prelude</span>&gt; [(i, j)|i&lt;-[<span class="number">1.</span><span class="number">.10</span>], j&lt;-[<span class="number">1.</span><span class="number">.10</span>], i + j == <span class="number">10</span>]</span><br><span class="line">[(<span class="number">1</span>,<span class="number">9</span>),(<span class="number">2</span>,<span class="number">8</span>),(<span class="number">3</span>,<span class="number">7</span>),(<span class="number">4</span>,<span class="number">6</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">4</span>),(<span class="number">7</span>,<span class="number">3</span>),(<span class="number">8</span>,<span class="number">2</span>),(<span class="number">9</span>,<span class="number">1</span>)]</span><br></pre></td></tr></table></figure>
+<p><strong>問題</strong>：請寫出所有三邊長小於100的畢式直角三角形。</p>
 <h2 id="無限串列">無限串列</h2>
 <p>由於Haskell的懶惰求值，我們可以定義無限串列。<br>
 當使用範圍表答式時，其實可以不定義範圍的結束在哪裡，也就是寫<code>[1..]</code>。<br>
@@ -514,10 +519,10 @@
 </ul>
 <h1 id="後語">後語</h1>
 <p>基本上這次就這樣啦。基礎介紹的很大一部份是參考<a href="http://learnyouahaskell.com" target="_blank" rel="noopener">learn you a haskell for great good</a>，畢竟我的Haskell也是在上面學的。如果想深入看看Prelude有哪些東西，也可以上<a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html" target="_blank" rel="noopener">hackage</a>看看。<br>
-讀者試一試會發現，上面的函式已經能夠弄出很複雜很炫泡的東西了，<br>
-例如什麼是<code>flip const const</code>？<br>
-什麼又是<code>curry fst</code>？<br>
-什麼又是<code>((not.).(null.).filter.(==))</code>？<br>
+讀者試一試會發現，上面的函式已經能夠弄出很複雜很炫泡的東西了，例如<br>
+<strong>問題</strong>：什麼是<code>flip const const</code>？<br>
+<strong>問題</strong>：什麼又是<code>curry fst</code>？<br>
+<strong>問題</strong>：什麼又是<code>((not.).(null.).filter.(==))</code>？<br>
 從型別應該就可以略知一二了。</p>
 <hr class="footnotes-sep">
 <section class="footnotes">
@@ -526,7 +531,7 @@
 </li>
 <li id="fn2" class="footnote-item"><p>你可能會覺得很莫名其妙，但是它是有存在的價值的。<br>
 <code>($)</code>的優先度很低，而且是右至左，因此可以將<code>f (g (h x))</code>改寫成<code>f $ g $ h x</code>。<br>
-而使用稍後會介紹的operator section的語法更可以做到許多對高級函數的操作 <a href="#fnref2" class="footnote-backref">↩</a></p>
+而使用稍後會介紹的operator section的語法更可以做到許多對高級函數的操作。 <a href="#fnref2" class="footnote-backref">↩</a></p>
 </li>
 </ol>
 </section>
