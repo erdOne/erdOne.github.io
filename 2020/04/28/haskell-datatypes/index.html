@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="這是目前庫存的haskell裡面最後一篇文啦&amp;gt;&amp;lt; 在本文中，會介紹如何在haskell中定義新的型別，並介紹在Prelude中就包含的各種型別與型別建構子。 接著會簡單解釋這種型別的建構被稱為 ADT。 在文末會提到如何用純的FP來實作這些看似不是很FP的東西。">
+<meta name="keywords" content="CS,haskell,type theory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Haskell簡介[3]--型別的定義與史考特編碼">
+<meta property="og:url" content="http://yoursite.com/2020/04/28/haskell-datatypes/index.html">
+<meta property="og:site_name" content="Erd1 nerd1">
+<meta property="og:description" content="這是目前庫存的haskell裡面最後一篇文啦&amp;gt;&amp;lt; 在本文中，會介紹如何在haskell中定義新的型別，並介紹在Prelude中就包含的各種型別與型別建構子。 接著會簡單解釋這種型別的建構被稱為 ADT。 在文末會提到如何用純的FP來實作這些看似不是很FP的東西。">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:updated_time" content="2020-04-27T19:29:08.764Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Haskell簡介[3]--型別的定義與史考特編碼">
+<meta name="twitter:description" content="這是目前庫存的haskell裡面最後一篇文啦&amp;gt;&amp;lt; 在本文中，會介紹如何在haskell中定義新的型別，並介紹在Prelude中就包含的各種型別與型別建構子。 接著會簡單解釋這種型別的建構被稱為 ADT。 在文末會提到如何用純的FP來實作這些看似不是很FP的東西。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/04/28/haskell-datatypes/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Haskell簡介[3]--型別的定義與史考特編碼 | Erd1 nerd1</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Erd1 nerd1</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/haskell-datatypes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="erd1">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Erd1 nerd1">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Haskell簡介[3]--型別的定義與史考特編碼
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-04-28 02:48:46 / Modified: 03:29:08" itemprop="dateCreated datePublished" datetime="2020-04-28T02:48:46+08:00">2020-04-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>這是目前庫存的haskell裡面最後一篇文啦&gt;&lt;<br>
+在本文中，會介紹如何在haskell中定義新的型別，並介紹在Prelude中就包含的各種型別與型別建構子。<br>
+接著會簡單解釋這種型別的建構被稱為 <abbr title="Algebraic Data Type">ADT</abbr>。<br>
+在文末會提到如何用純的FP來實作這些看似不是很FP的東西。</p>
+<a id="more"></a>
+<h1 id="定義型別">定義型別</h1>
+<h2 id="type"><code>type</code></h2>
+<p><code>type</code>的運作方式類似C++的<code>typedef</code>，語法是<code>type MyInt = Int</code><br>
+在之後的<code>MyInt</code>跟<code>Int</code>就是等價的，所有需要<code>Int</code>當參數的函式都可以傳入<code>Int</code>，反之亦然。</p>
+<h2 id="data"><code>data</code></h2>
+<p><code>data</code>是宣告新型別所用的關鍵字，例如<code>data PairInt = Pair Int Int</code>。<br>
+這時就可以用<code>Pair 3 5</code>來建構一個<code>PairInt</code>。<br>
+注意型別和建構子的首字母必須大寫，而一般函式的首字母必須小寫。<br>
+而利用模式匹配就可以拿到那些欄位的值。例如</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">sum'</span> :: <span class="type">PairInt</span> -&gt; <span class="type">Int</span></span><br><span class="line"><span class="title">sum'</span> (<span class="type">Pair</span> a b) = a + b</span><br></pre></td></tr></table></figure>
+<p>記得加上括號。</p>
+<p>而對於一個型別也可以定義多於一個建構子。<br>
+例如<code>data Node = Leaf | Node Node Node</code>就是一個二元樹的節點。<br>
+建構子的名稱是可以跟型別重複的，但是不能跟其他建構子重複。<br>
+而建構子也可以傳入新定義的型別，也可以什麼都不傳。<br>
+所以在Prelude中，<code>Bool</code>的定義方式就是<code>data Bool = False | True</code>。</p>
+<p>常常，定義新型別後，我們會需要定義一堆函式來得到每個欄位的值，例如</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Student</span> = <span class="type">Student</span> <span class="type">Int</span> <span class="type">Int</span> <span class="type">Int</span> <span class="type">String</span> <span class="type">String</span></span></span><br><span class="line"></span><br><span class="line"><span class="title">getGrade</span> (<span class="type">Student</span> g _ _ _ _) = g</span><br><span class="line"><span class="title">getClass</span> (<span class="type">Student</span> _ c _ _ _) = c</span><br><span class="line"><span class="title">getSeatN</span> (<span class="type">Student</span> _ _ s _ _) = s</span><br><span class="line"><span class="title">getID</span>    (<span class="type">Student</span> _ _ _ i _) = i</span><br><span class="line"><span class="title">getName</span>  (<span class="type">Student</span> _ _ _ _ n) = n</span><br></pre></td></tr></table></figure>
+<p>而Haskell很貼心的引入了語法糖，使以上的程式碼可以簡化為</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Student</span> = <span class="type">Student</span> &#123;</span></span><br><span class="line"><span class="class">    <span class="title">getGrade</span> :: <span class="type">Int</span>,</span></span><br><span class="line"><span class="class">    <span class="title">getClass</span> :: <span class="type">Int</span>,</span></span><br><span class="line"><span class="class">    <span class="title">getSeatN</span> :: <span class="type">Int</span>,</span></span><br><span class="line"><span class="class">    <span class="title">getID</span>    :: <span class="type">String</span>,</span></span><br><span class="line"><span class="class">    <span class="title">getName</span>  :: <span class="type">String</span></span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>讀者可以去檢查建構子Student以及其他的函式的型別是不是跟你想像的一樣。</p>
+<p>另外，在定義型別時也可以傳入型別當作引數，例如</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Pair</span> a = <span class="type">Pair</span> a a</span></span><br></pre></td></tr></table></figure>
+<p><code>Pair 3 5</code>的型別就會是<code>Num a =&gt; Pair a</code>的。這時的<code>Pair</code>是一個型別建構子。而由於他是接受一個型別產生新的型別，他的型別種類(kind)是<code>* -&gt; *</code>。</p>
+<p><strong>問題</strong>：如果<code>data Foo a b c = Bar a | Foo (b c)</code>，那<code>Foo</code>的種類會是什麼？</p>
+<h2 id="deriving"><code>deriving</code></h2>
+<p>我們定義了新型別時，要怎麼把它加入一個型別類別呢？用的就是關鍵字<code>deriving</code>。有些型別類別有新加入型別的預設定義，因此只要在宣告型別時加入即可。例如<br>
+<code>data Node = Leaf | Node Node Node deriving Show</code><br>
+你就可以執行 <code>show $ Node (Node Leaf Leaf) Leaf</code>了。</p>
+<p>又例如<code>Eq</code>和<code>Ord</code>都是有預設的型別定義，於是<br>
+<code>data Node = Leaf | Node Node Node deriving (Eq, Ord)</code><br>
+就可以讓<code>Node</code>屬於<code>Eq</code>和<code>Ord</code>。<br>
+<code>Eq</code>的定義就是最直覺的那個，而<code>Ord</code>則是依照定義建構子的順序由小到大。同樣建構子再依字典序比較每個欄位的值。<br>
+因此<code>data Bool = False | True</code> 會使得<code>False &lt; True</code>。</p>
+<p>將型別加入一個沒有預設定義的型別類型的方法會在之後提到型別類型的定義時一併說明。</p>
+<h1 id="prelude內建型別"><code>Prelude</code>內建型別</h1>
+<h2 id="串列">串列</h2>
+<p>事實上，串列的定義也是用類似的概念達成的。讓我們來看看以下的定義</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">List</span> a = <span class="type">Nil</span> | <span class="type">Cons</span> a (<span class="type">List</span> <span class="title">a</span>)</span></span><br></pre></td></tr></table></figure>
+<p>可以看出，<code>List</code>是一個種類為<code>* -&gt;　*</code>的型別建構子。<br>
+而一個<code>a</code>的<code>List</code>的確是一堆<code>a</code>依序跟一個空串列(<code>Nil</code>)做連接<code>Cons</code><br>
+事實上在<code>Prelude</code>裡的<code>Nil</code>就是<code>[]</code>，<code>Cons</code>就是<code>(:)</code>，而<code>[1,2,3]</code>只是<code>1:(2:(3:[]))</code>的語法糖。</p>
+<p>因此在模式匹配時，可以直接用(a:b)匹配到串列的<code>head</code>跟<code>tail</code>。拿上一篇文的<code>take</code>做例子就是</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">take'</span> :: <span class="type">Int</span> -&gt; [a] -&gt; [a]</span><br><span class="line"><span class="title">take'</span> _ [] = []</span><br><span class="line"><span class="title">take'</span> <span class="number">0</span>  _ = []</span><br><span class="line"><span class="title">take'</span> x (a:b)  = a:(take' (x<span class="number">-1</span>) b)</span><br></pre></td></tr></table></figure>
+<h2 id="maybe"><code>Maybe</code></h2>
+<p><code>Maybe :: * -&gt; *</code>是一個Prelude包含的一個型別建構子。他的定義如下<br>
+<code>data Maybe a = Nothing | Just a</code><br>
+當函式會有例外時，常常會使用<code>Maybe</code>。<code>Just</code>代表函式如預期執行，並回傳那個數值，而<code>Nothing</code>代表函式出了例外。<br>
+例如對空串列呼叫<code>head</code>時會直接丟出錯誤，因此我們來試圖實做一個<code>safeHead</code>，將例外包到<code>Maybe</code>中：</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">safeHead</span> :: [a] -&gt; <span class="type">Maybe</span> a</span><br><span class="line"><span class="title">safeHead</span> [] = <span class="type">Nothing</span></span><br><span class="line"><span class="title">safeHead</span> (a:_) = <span class="type">Just</span> a</span><br></pre></td></tr></table></figure>
+<p>這樣就可以在外面再處理這個例外。</p>
+<h2 id="either"><code>Either</code></h2>
+<p><code>Either :: * -&gt; * -&gt; *</code>是令一個Prelude包含的一個型別建構子。他的定義如下<br>
+<code>data Either a b = Left a | Right b</code><br>
+當函式不但有例外，這個例外還需要包含錯誤訊息時就會使用<code>Either</code>。例如</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">safeHead</span> :: [a] -&gt; <span class="type">Either</span> <span class="type">String</span> a</span><br><span class="line"><span class="title">safeHead</span> [] = <span class="type">Left</span> <span class="string">"the list is empty"</span></span><br><span class="line"><span class="title">safeHead</span> (a:_) = <span class="type">Right</span> a</span><br></pre></td></tr></table></figure>
+<h1 id="代數資料型別-adt">代數資料型別(<abbr title="Algebraic Data Type">ADT</abbr>)</h1>
+<p>先來進行一個小小的數數測驗吧&gt;&lt;<br>
+請你告訴我每個型別總共有多少個可能的取值</p>
+<ul>
+<li><code>()</code></li>
+<li><code>data Bool = False | True</code></li>
+<li><code>data Numbers = One | Two | Three</code></li>
+<li><code>data Void</code></li>
+<li><code>(Bool, Bool)</code></li>
+<li><code>(Numbers, Bool)</code></li>
+<li><code>data Foo = Foo Bool Numbers</code></li>
+<li><code>data Bar = Bar Bool | BarBar ()</code></li>
+</ul>
+<p>你應該會發現，用<code>|</code>分隔的會讓左右的可能數相加，而共用同一個建構子則會讓兩個可能數相乘。<br>
+因此，用<code>|</code>建構出的型別叫做加法型別(sum types)，而用一個多元建構子建構的型別稱作乘法型別(product types)。用這兩者建構的型別就稱為代數資料型別。</p>
+<p>更詳細的型別論觀點就等有朝一日我提到這方面的東西再說吧Q (或許沒有這一天Q)。</p>
+<h1 id="史考特編碼-scott-encoding">史考特編碼(Scott encoding)</h1>
+<p>讀者可能會想問，這些<code>data</code>超interface的，根本只是假藉FP在偷渡一些OOP的東西吧。<br>
+讓我們來看看這些型別是如何實做的吧</p>
+<h2 id="箱子裡的數字">箱子裡的數字</h2>
+<p>在試接下來的例子之前，請先在ghci內打上<code>:set -XRank2Types</code><br>
+先來考慮這個型別<code>forall r. (Int -&gt; r) -&gt; r</code><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>。<br>
+只要任給一個需要<code>Int</code>作為參數的函數，他就可以算出這個函數的值。<br>
+那他是不是就等價於一個<code>Int</code>？</p>
+<blockquote>
+<p>當我看到一個函數，它走路像<code>Int</code>，游泳像<code>Int</code>，叫聲像<code>Int</code>，我就稱其為<code>Int</code></p>
+</blockquote>
+<p>所以這個函數事實上擁有一個<code>Int</code>的所有資訊。他儲存著一個<code>Int</code>。</p>
+<h2 id="箱子裡的兩個東西">箱子裡的兩個東西</h2>
+<p>再來考慮這個型別<code>type SPair a b = forall r. (a -&gt; b -&gt; r) -&gt; r</code>。<br>
+是不是就等價於一個存著兩個東西的二組了呢？<br>
+我們可以來實作<code>fst</code>和<code>snd</code>以及<code>makePair</code>：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">fst'</span> :: <span class="type">SPair</span> a b -&gt; a</span><br><span class="line"><span class="title">fst'</span> f = f (\a b -&gt; a)</span><br><span class="line"></span><br><span class="line"><span class="title">snd'</span> :: <span class="type">SPair</span> a b -&gt; b</span><br><span class="line"><span class="title">snd'</span> f = f (\a b -&gt; b)</span><br><span class="line"></span><br><span class="line"><span class="title">makePair</span> :: a -&gt; b -&gt; <span class="type">SPair</span> a b</span><br><span class="line"><span class="title">makePair</span> a b = \f -&gt; f a b</span><br></pre></td></tr></table></figure>
+<h2 id="我有一個bool">我有一個<code>Bool</code></h2>
+<p>接著考慮這個型別<code>type SBool = forall r. r -&gt; r -&gt; r</code>。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">false</span> :: <span class="type">SBool</span></span><br><span class="line"><span class="title">false</span> = \a b -&gt; a</span><br><span class="line"></span><br><span class="line"><span class="title">true</span> :: <span class="type">SBool</span></span><br><span class="line"><span class="title">true</span> = \a b -&gt; b</span><br><span class="line"></span><br><span class="line"><span class="title">ifThenElse</span> :: <span class="type">SBool</span> -&gt; r -&gt; r -&gt; r</span><br><span class="line"><span class="title">ifThenElse</span> f = f</span><br><span class="line"><span class="comment">-- ifThenElse a b c == if a then b else c</span></span><br><span class="line"></span><br><span class="line"><span class="title">and'</span> :: <span class="type">SBool</span> -&gt; <span class="type">SBool</span> -&gt; <span class="type">SBool</span></span><br><span class="line"><span class="title">and'</span> a b = ifThenElse a b a</span><br><span class="line"></span><br><span class="line"><span class="title">or'</span> :: <span class="type">SBool</span> -&gt; <span class="type">SBool</span> -&gt; <span class="type">SBool</span></span><br><span class="line"><span class="title">or'</span> a b = ifThenElse a a b</span><br><span class="line"></span><br><span class="line"><span class="title">toBool</span> :: <span class="type">SBool</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">toBool</span> a = a <span class="type">False</span> <span class="type">True</span></span><br></pre></td></tr></table></figure>
+<p>讀者會發現只要能做到<code>ifThenElse</code>就可以做到<code>Bool</code>可以做到的所有事情！<br>
+而<code>SBool</code>的型別基本上就是<code>ifThenElse</code>。<br>
+更仔細看的話<code>ifThenElse</code>事實上就是在做模式匹配；只要能做到模式匹配就是一個<code>Bool</code>！</p>
+<h2 id="我有一個maybe">我有一個<code>Maybe</code></h2>
+<p>接著是這個型別<code>type SMaybe a = forall r. r -&gt; (a -&gt; r) -&gt; r</code>。<br>
+以及實作</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">just</span> :: a -&gt; <span class="type">SMaybe</span> a</span><br><span class="line"><span class="title">just</span> a = \x f -&gt; f a</span><br><span class="line"></span><br><span class="line"><span class="title">nothing</span> :: <span class="keyword">forall</span> a. <span class="type">SMaybe</span> a</span><br><span class="line"><span class="title">nothing</span> = \x f -&gt; x</span><br><span class="line"></span><br><span class="line"><span class="title">toMaybe</span> :: <span class="type">Maybe</span> a -&gt; <span class="type">SMaybe</span> a</span><br><span class="line"><span class="title">toMaybe</span> f = f <span class="type">Nothing</span> \a -&gt; <span class="type">Just</span> a</span><br></pre></td></tr></table></figure>
+<p>其實<code>SMaybe</code>的型別就是在做模式匹配的型別。<br>
+仔細看看<code>Maybe</code>和<code>SMaybe</code>的定義的異同</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span>  <span class="type">Maybe</span> a = <span class="type">Nothing</span>    | <span class="type">Just</span> a</span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">SMaybe</span> a =         r -&gt;     (<span class="title">a</span> -&gt; <span class="title">r</span>) -&gt; r</span></span><br></pre></td></tr></table></figure>
+<p>這種對應關係就是史考特編碼。<br>
+<strong>問題</strong>：你能否寫出<code>Either a b</code>的史考特編碼？<br>
+<strong>問題</strong>：你能否寫出<code>data Data a = This | That | These a | Those a a</code>的史考特編碼？</p>
+<h2 id="我有一個list">我有一個<code>List</code></h2>
+<p>至於<code>List</code>是遞迴定義的，因此我們的型別也需要被遞迴定義。Haskell的<code>type</code>是不支援遞迴定義的，所以我們必須使用<code>data</code>。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">SList</span> a = <span class="type">SList</span> (<span class="title">forall</span> <span class="title">r</span>. <span class="title">r</span> -&gt; (<span class="title">a</span> -&gt; <span class="type">SList</span> <span class="title">a</span> -&gt; <span class="title">r</span>) -&gt; r</span></span><br><span class="line"></span><br><span class="line"><span class="title">length'</span> :: <span class="type">SList</span> a -&gt; <span class="type">Int</span></span><br><span class="line"><span class="title">length'</span> (<span class="type">SList</span> f) = f <span class="number">0</span> \_ xs -&gt; <span class="number">1</span> + (length' xs)</span><br><span class="line"></span><br><span class="line"><span class="title">toList</span> :: <span class="type">SList</span> a -&gt; [a]</span><br><span class="line"><span class="title">toList</span> = undefined</span><br><span class="line"></span><br><span class="line"><span class="title">safeHead</span> :: <span class="type">SList</span> a -&gt; <span class="type">SMaybe</span> a</span><br><span class="line"><span class="title">safeHead</span> = undefined</span><br><span class="line"></span><br><span class="line"><span class="title">map'</span> :: (a -&gt; b) -&gt; <span class="type">SList</span> a -&gt; <span class="type">SList</span> b</span><br><span class="line"><span class="title">map'</span> = undefined</span><br><span class="line"></span><br><span class="line"><span class="title">zip'</span> :: <span class="type">SList</span> a -&gt; <span class="type">SList</span> b -&gt; <span class="type">SList</span> (<span class="type">SPair</span> a b)</span><br><span class="line"><span class="title">zip'</span> = undefined</span><br></pre></td></tr></table></figure>
+<p><strong>問題</strong>：你可以完成以上的函數嗎？<br>
+<strong>問題</strong>：你能否寫出<code>data Nat = Z | S Nat</code>的史考特編碼？事實上這就是用皮亞諾公理建構的自然數。請問你能否實作出<code>pred</code> <code>succ</code> <code>(+)</code> <code>(*)</code>呢？<br>
+<strong>問題</strong>：你能否寫出<code>data Tree a = Leaf a | Node a Tree Tree</code>的史考特編碼？</p>
+<p>事實上除了史考特編碼，還有另外一種邱奇編碼，但筆者就不多提了，有興趣的讀者可以自行參考維基百科。</p>
+<h1 id="後記">後記</h1>
+<p>希望這次比之前的內容有趣多了&gt;&lt;<br>
+也希望我的說明夠清楚&gt;&lt;<br>
+第一次遇到FP的想法會覺得卡卡的是很自然的，多想幾遍、多試幾遍腦袋就會越來越靈活喔&gt;&lt;</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>等等什麼是<code>forall</code>？什麼又是<code>Rank2Types</code>？<br>
+我可能會之後特別開一篇文來解釋，不過就目前而言，前者的意思只是這個函數必須能夠接受任何的<code>Int -&gt; r</code>，不論<code>r</code>的型別是什麼。而後者只是能讓我們這麼寫的語言擴展。 <a href="#fnref1" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/CS/" rel="tag"># CS</a>
+          
+            <a href="/tags/haskell/" rel="tag"># haskell</a>
+          
+            <a href="/tags/type-theory/" rel="tag"># type theory</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/28/hello-blog-again/" rel="next" title="Hello, Blog, Again!">
+                <i class="fa fa-chevron-left"></i> Hello, Blog, Again!
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">erd1</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#定義型別"><span class="nav-number">1.</span> <span class="nav-text">定義型別</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#type"><span class="nav-number">1.1.</span> <span class="nav-text">type</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data"><span class="nav-number">1.2.</span> <span class="nav-text">data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deriving"><span class="nav-number">1.3.</span> <span class="nav-text">deriving</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#prelude內建型別"><span class="nav-number">2.</span> <span class="nav-text">Prelude內建型別</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#串列"><span class="nav-number">2.1.</span> <span class="nav-text">串列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maybe"><span class="nav-number">2.2.</span> <span class="nav-text">Maybe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#either"><span class="nav-number">2.3.</span> <span class="nav-text">Either</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代數資料型別-adt"><span class="nav-number">3.</span> <span class="nav-text">代數資料型別(ADT)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#史考特編碼-scott-encoding"><span class="nav-number">4.</span> <span class="nav-text">史考特編碼(Scott encoding)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#箱子裡的數字"><span class="nav-number">4.1.</span> <span class="nav-text">箱子裡的數字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#箱子裡的兩個東西"><span class="nav-number">4.2.</span> <span class="nav-text">箱子裡的兩個東西</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我有一個bool"><span class="nav-number">4.3.</span> <span class="nav-text">我有一個Bool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我有一個maybe"><span class="nav-number">4.4.</span> <span class="nav-text">我有一個Maybe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我有一個list"><span class="nav-number">4.5.</span> <span class="nav-text">我有一個List</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#後記"><span class="nav-number">5.</span> <span class="nav-text">後記</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">erd1</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
