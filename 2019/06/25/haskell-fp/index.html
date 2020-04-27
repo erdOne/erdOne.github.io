@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Erd1 nerd1">
 <meta property="og:description" content="Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。 在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。">
 <meta property="og:locale" content="zh-tw">
-<meta property="og:updated_time" content="2019-06-26T08:47:29.066Z">
+<meta property="og:updated_time" content="2019-06-26T09:13:47.100Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Haskell簡介[0]--什麼是函式程式設計？">
 <meta name="twitter:description" content="Haskell是一個強靜態型別純函式程式語言，於1990年自Miranda分化出來。 在開始介紹Haskell以前，我們先來聊聊Haskell最重要的概念：函式程式設計(FP, functional programming)。">
@@ -346,7 +346,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-06-26 16:47:29" itemprop="dateModified" datetime="2019-06-26T16:47:29+08:00">2019-06-26</time>
+                <time title="Modified: 2019-06-26 17:13:47" itemprop="dateModified" datetime="2019-06-26T17:13:47+08:00">2019-06-26</time>
               
             
           </span>
@@ -420,14 +420,14 @@
 <p>如果一個函數的返回值不被用到，則他不需要被計算。</p>
 </li>
 <li>
-<p><strong>記憶化</strong>(memoization)：儲存大計算量函數的返回值，並在需要的時候從緩存中提取數值。</p>
+<p><strong>記憶化</strong> (memoization)：儲存大計算量函數的返回值，並在需要的時候從緩存中提取數值。</p>
 </li>
 <li>
-<p><strong>消除公共子表達式</strong>(<abbr title="Common Subexpression Elimination">CSE</abbr>)：<br>
+<p><strong>消除公共子表達式</strong> (<abbr title="Common Subexpression Elimination">CSE</abbr>)：<br>
 若函式中有重複的子表達式，則可以只計算一次。</p>
 </li>
 <li>
-<p><strong>平行處理</strong>(parallelism)：如前一節所述，排程時不需利用mutex等黑科技，畢竟兩個不同的函數運行是獨立的。</p>
+<p><strong>平行處理</strong> (parallelism)：如前一節所述，排程時不需利用mutex等黑科技，畢竟兩個不同的函數運行是獨立的。</p>
 </li>
 <li>
 <p><strong>deforestation</strong>：可以將求值過程中的樹狀結構（包含串列）去除或省略。例如以下程式碼<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
@@ -471,11 +471,11 @@
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>若<code>xs</code>中的每個元素都滿足<code>p</code>，則<code>all p xs</code>回傳<code>True</code>，否則回傳<code>False</code>。其中<code>xs</code>是一個串列，<code>p</code>是一個謂語。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+<li id="fn1" class="footnote-item"><p>若<code>xs</code>中的每個元素都滿足<code>p</code>，則<code>all p xs</code>回傳<code>True</code>，否則回傳<code>False</code>。其中<code>xs</code>是一個串列，<code>p</code>是一個謂語。 <a href="#fnref1" class="footnote-backref">↩</a></p>
 </li>
-<li id="fn2" class="footnote-item"><p>事實上並非如此，真正的型別會是 <code>(+) :: Num a =&gt; a -&gt; a -&gt; a</code>，不過為了說明方便就先假設是文中的樣子了 <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+<li id="fn2" class="footnote-item"><p>事實上並非如此，真正的型別會是 <code>(+) :: Num a =&gt; a -&gt; a -&gt; a</code>，不過為了說明方便就先假設是文中的樣子了 <a href="#fnref2" class="footnote-backref">↩</a></p>
 </li>
-<li id="fn3" class="footnote-item"><p>在Haskell中<code>(-&gt;)</code>是右結合的，因此括號可以省略 <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+<li id="fn3" class="footnote-item"><p>在Haskell中<code>(-&gt;)</code>是右結合的，因此括號可以省略 <a href="#fnref3" class="footnote-backref">↩</a></p>
 </li>
 </ol>
 </section>
@@ -529,6 +529,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/26/lambda-calculus/" rel="prev" title="Haskell簡介[0.5]--關於λ-calculus">
+                Haskell簡介[0.5]--關於λ-calculus <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -597,7 +601,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -620,7 +624,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">tags</span>
                   
                 </div>
@@ -826,6 +836,13 @@
   
 
   
+  
+
+  
+  
+
+  
+
 
   
 

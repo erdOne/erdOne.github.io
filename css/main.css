@@ -169,6 +169,12 @@ body {
     font-size: 16px;
   }
 }
+p {
+  margin: 0;
+}
+*+p {
+  margin: 20px 0 0 0;
+}
 h1,
 h2,
 h3,
@@ -180,6 +186,14 @@ h6 {
   font-weight: bold;
   line-height: 1.5;
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+h1+p,
+h2+p,
+h3+p,
+h4+p,
+h5+p,
+h6+p {
+  margin-top: 0;
 }
 h1 {
   font-size: 24px;
@@ -264,9 +278,6 @@ h6 code {
   h6 code {
     font-size: 1em;
   }
-}
-p {
-  margin: 0 0 20px 0;
 }
 a,
 span.exturl {
@@ -1765,7 +1776,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ff6fc6;
+  background: #4169ff;
 }
 .feed-link,
 .chat {
@@ -2122,6 +2133,10 @@ pre .javascript .function {
   top: 50%;
   transform: translate(-50%, -50%);
   color: #ccc;
+}
+.has-jax {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .page-archive .archive-page-counter {
   position: relative;
@@ -2705,4 +2720,11 @@ hr {
     width: auto;
     text-align: center;
   }
+}
+li {
+  overflow: visible;
+}
+ul,
+ol {
+  margin: 0;
 }
