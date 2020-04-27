@@ -95,16 +95,16 @@
 
 
   <meta name="description" content="雖然就上一篇的內容，好像FP是最近才被發明的新東西，但事實上FP和OOP都是五零年代的產物。但OOP在八零年代便開始盛行，FP卻一直到最近才開始在商業使用上慢慢出現。在此之前，FP一直都是為了學術討論而開發。以下我們來聊聊FP在學術領域的歷史。 在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為">
-<meta name="keywords" content="CS, haskell, logic">
+<meta name="keywords" content="CS,haskell,logic">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Haskell簡介[0.5]--關於λ-calculus">
-<meta property="og:url" content="http://yoursite.com/2019/06/26/lambda-calculus/index.html">
+<meta property="og:title" content="Haskell簡介[0.5.5]--形式系統">
+<meta property="og:url" content="http://yoursite.com/2019/06/26/formal-system/index.html">
 <meta property="og:site_name" content="Erd1 nerd1">
 <meta property="og:description" content="雖然就上一篇的內容，好像FP是最近才被發明的新東西，但事實上FP和OOP都是五零年代的產物。但OOP在八零年代便開始盛行，FP卻一直到最近才開始在商業使用上慢慢出現。在此之前，FP一直都是為了學術討論而開發。以下我們來聊聊FP在學術領域的歷史。 在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為">
 <meta property="og:locale" content="zh-tw">
-<meta property="og:updated_time" content="2019-07-24T09:08:26.275Z">
+<meta property="og:updated_time" content="2020-04-27T16:35:38.942Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Haskell簡介[0.5]--關於λ-calculus">
+<meta name="twitter:title" content="Haskell簡介[0.5.5]--形式系統">
 <meta name="twitter:description" content="雖然就上一篇的內容，好像FP是最近才被發明的新東西，但事實上FP和OOP都是五零年代的產物。但OOP在八零年代便開始盛行，FP卻一直到最近才開始在商業使用上慢慢出現。在此之前，FP一直都是為了學術討論而開發。以下我們來聊聊FP在學術領域的歷史。 在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為">
 
 
@@ -113,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/06/26/lambda-calculus/">
+  <link rel="canonical" href="http://yoursite.com/2019/06/26/formal-system/">
 
 
 
@@ -123,7 +123,7 @@
   };
 </script>
 
-  <title>Haskell簡介[0.5]--關於λ-calculus | Erd1 nerd1</title>
+  <title>Haskell簡介[0.5.5]--形式系統 | Erd1 nerd1</title>
   
 
 
@@ -286,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/lambda-calculus/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/formal-system/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="erd1">
@@ -303,7 +303,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Haskell簡介[0.5]--關於λ-calculus
+          <h1 class="post-title" itemprop="name headline">Haskell簡介[0.5.5]--形式系統
 
               
             
@@ -346,7 +346,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-07-24 17:08:26" itemprop="dateModified" datetime="2019-07-24T17:08:26+08:00">2019-07-24</time>
+                <time title="Modified: 2020-04-28 00:35:38" itemprop="dateModified" datetime="2020-04-28T00:35:38+08:00">2020-04-28</time>
               
             
           </span>
@@ -381,7 +381,7 @@
 
       
         <p>雖然就上一篇的內容，好像FP是最近才被發明的新東西，但事實上FP和OOP都是五零年代的產物。但OOP在八零年代便開始盛行，FP卻一直到最近才開始在商業使用上慢慢出現。在此之前，FP一直都是為了學術討論而開發。以下我們來聊聊FP在學術領域的歷史。</p>
-<p>在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為了這個目的，各種形式系統開始層出不窮。今天我們要提的是以下兩者</p>
+<p>在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為了這個目的，各種形式系統開始層出不窮。我在本系列會提到的是以下兩者：</p>
 <ul>
 <li><strong>λ演算</strong>(λ-calculus)：三零年代由邱奇(Alonzo Church)提出，進行λ項的建構與歸約。</li>
 <li><strong>組合子邏輯</strong>(Combinatory logic)：五零年代由柯里(Haskell Brooks Curry<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>)提出，將λ演算中的抽象化移除，並用組合子取代。</li>
@@ -389,6 +389,7 @@
 <a id="more"></a>
 <p>在深入詳細介紹這兩個形式系統前，先來介紹形式系統(formal system)吧。</p>
 <h1 id="形式系統">形式系統</h1>
+<h2 id="定義">定義</h2>
 <p>先來看看嚴謹的定義。一個形式系統\(T\)是由以下四部分組成：</p>
 <ul>
 <li>
@@ -428,8 +429,8 @@
 <li>\(S_n = S\)</li>
 </ul>
 <p><strong>問題</strong>：公理算是定理嗎？</p>
-<p>來舉個例子吧：</p>
-<h3 id="miu系統">MIU系統</h3>
+<p>來看看兩個例子吧：</p>
+<h2 id="miu系統">MIU系統</h2>
 <ul>
 <li>
 <p>字母表：\(\{M, I, U\}\)</p>
@@ -439,7 +440,7 @@
 </li>
 <li>
 <p>公理：</p>
-<ol type="i">
+<ol type="1">
 <li>\(MI\)</li>
 </ol>
 </li>
@@ -469,7 +470,7 @@
 </ol>
 <p><strong>問題</strong>：\(MU\)在此形式系統下是定理嗎？</p>
 <p>再舉一個例子好了</p>
-<h3 id="pq-系統">pq-系統</h3>
+<h2 id="pq-系統">pq-系統</h2>
 <ul>
 <li>
 <p>字母表： \(\{p, q, -\}\)</p>
@@ -491,7 +492,7 @@
 </li>
 <li>
 <p>公理：</p>
-<ol type="i">
+<ol type="1">
 <li>\(xp-qx-\)</li>
 </ol>
 </li>
@@ -508,44 +509,44 @@
 你會發現其實這個文法描述的就是所有形如\(-\cdots-p-\cdots-q-\cdots-\)的句子。</p>
 <p><strong>問題</strong>：\(--p--q----\)在此形式系統下是定理嗎？<br>
 <strong>問題</strong>：什麼樣的wff在此形式系統下是定理？<sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup></p>
-<p>有了形式系統的概念，我們就可以來看看今天的主角，λ演算與組合子邏輯了。</p>
-<h1 id="λ演算">λ演算</h1>
-<p>一樣，從定義開始</p>
-<ul>
-<li>
-<p>字母表： \(\{\lambda, ., (, ), [, ], :, a-z \}\)</p>
-</li>
-<li>
-<p>形式文法：</p>
-<ul>
-<li>終止符號：\(\{\lambda, ., (, ), [, ], :, a-z \}\)</li>
-<li>非終止符號：\({S}\)</li>
-<li>起始符號：\(S\)</li>
-<li>產生式規則：
-<ul>
-<li>變數：\(S \rightarrow x\)</li>
-<li>抽象化：\(S \rightarrow (\lambda x.\ S)\)</li>
-<li>作用：\(S \rightarrow (S\ S)\)</li>
-<li>替換：\(S \rightarrow S[x:S]\)<br>
-其中\(x\)可以換成任何字母。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>公理：</p>
-<ol type="i">
-<li>\(xp-qx-\)</li>
-</ol>
-</li>
-<li>
-<p>推論規則：</p>
-<ol type="1">
-<li>\(xpyqz\vdash xpy-qz-\)</li>
-</ol>
-</li>
-</ul>
+<h1 id="後語">後語</h1>
+<p>這篇文就是為啥去年發了一篇就卡住了QQ<br>
+發現我還要去翻一堆課本跟文獻QQ<br>
+所以決定先發這樣，剩下的lambda calculus跟combinatory logic就之後再發了Q</p>
+<!--
+有了形式系統的概念，我們就可以來看看今天的主角，λ演算了。
+
+# λ演算
+一樣，從定義開始
+-   字母表： $\{\lambda,\ .,\ (,\ ),\ [,\ ],\ :, =, a-z \}$
+-   形式文法：
+    -   終止符號：$\{\lambda,\ .,\ (,\ ),\ [,\ ],\ :, a-z \}$
+    -   非終止符號：$\{S, T\}$
+    -   起始符號：$S$
+    -   產生式規則：
+        -   等式：$S \rightarrow T$
+        -   變數：$T \rightarrow x$
+        -   抽象化：$T \rightarrow (\lambda x.\ T)$
+        -   作用：$T \rightarrow (T\ T)$
+        -   替換：$T \rightarrow T[x:T]$
+        其中$x$可以換成任何字母。
+-   公理：
+    1.  等號的自反性
+    2.  $M = (M)$
+    3.  替換的定義
+        i.   $x[x:\ E] = E$
+        ii.  $(\lambda x.\ M)[x:\ E] = \lambda x.\ M$
+        iii. $(\lambda y.\ M)[x:\ E] = \lambda y.\ M[x:\ E]$
+        iv.  $(M\ N)[x:\ E] = M[x:\ E]\ N[x:\ E]$
+    4. $(\lambda x.\ M) = (\lambda y.\ M[x:\ y])$ 此稱為$\alpha$-變換。
+    5. $((\lambda x. M)\ E) = M[x:\ E]$ 稱為$\beta$-歸約
+-   推論規則：
+    1.  等號的對稱性與遞移律
+    2.  等量公理
+
+這就是最基本的無型別λ演算。事實上用這系列的形式語言與適當的定義，可以建構出包含ZF與一階邏輯的世界。不過
 <iframe height="400px" width="100%" src="https://repl.it/@erd1/CheerfulIncredibleAmoebas?lite=true" scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals"></iframe>
+-->
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
@@ -588,7 +589,11 @@
         
         <div class="post-tags">
           
-            <a href="/tags/CS-haskell-logic/" rel="tag"># CS, haskell, logic</a>
+            <a href="/tags/CS/" rel="tag"># CS</a>
+          
+            <a href="/tags/haskell/" rel="tag"># haskell</a>
+          
+            <a href="/tags/logic/" rel="tag"># logic</a>
           
         </div>
       
@@ -611,8 +616,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/24/nimber/" rel="prev" title="nimber">
-                nimber <i class="fa fa-chevron-right"></i>
+              <a href="/2020/04/28/haskell-intro/" rel="prev" title="Haskell簡介[1]--Haskell簡介（">
+                Haskell簡介[1]--Haskell簡介（ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -682,7 +687,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -711,7 +716,7 @@
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">tags</span>
                   
                 </div>
@@ -749,7 +754,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#形式系統"><span class="nav-number">1.</span> <span class="nav-text">形式系統</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#miu系統"><span class="nav-number">1.0.1.</span> <span class="nav-text">MIU系統</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pq-系統"><span class="nav-number">1.0.2.</span> <span class="nav-text">pq-系統</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#λ演算"><span class="nav-number">2.</span> <span class="nav-text">λ演算</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#形式系統"><span class="nav-number">1.</span> <span class="nav-text">形式系統</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定義"><span class="nav-number">1.1.</span> <span class="nav-text">定義</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#miu系統"><span class="nav-number">1.2.</span> <span class="nav-text">MIU系統</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pq-系統"><span class="nav-number">1.3.</span> <span class="nav-text">pq-系統</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#後語"><span class="nav-number">2.</span> <span class="nav-text">後語</span></a></li></ol></div>
             
 
           </div>
@@ -770,7 +775,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

@@ -282,7 +282,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/nimber/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/haskell-functions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="erd1">
@@ -302,7 +302,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/07/24/nimber/" class="post-title-link" itemprop="url">nimber</a>
+                <a href="/2020/04/28/haskell-functions/" class="post-title-link" itemprop="url">Haskell簡介[2]--函式的宣告與各種語法</a>
               
             
           </h1>
@@ -327,25 +327,9 @@
                 
               
 
-              <time title="Created: 2019-07-24 17:08:18" itemprop="dateCreated datePublished" datetime="2019-07-24T17:08:18+08:00">2019-07-24</time>
+              <time title="Created: 2020-04-28 00:35:55" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:55+08:00">2020-04-28</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-02 02:39:02" itemprop="dateModified" datetime="2019-08-02T02:39:02+08:00">2019-08-02</time>
-              
             
           </span>
 
@@ -379,126 +363,23 @@
 
       
         
+          <p>喔呼連續發兩篇文呢&gt;&lt;<br>
+在這篇文中主要會介紹定義函式時會使用的語法<br>
+然後這應該是最後一篇單純介紹語法的Haskell簡介了&gt;&lt;</p>
+<h1 id="函式定義">函式定義</h1>
+<p>在Haskell中定義函式的方法很簡單，例如若要定義一個平方函式，只要<code>square x = x^2</code>即可。<br>
+注意Haskell的函數必須是小寫字母開頭，而大寫字母開頭的東西被留給型別的建構子。<br>
+一般而言為了避免一些不必要的問題，在寫函式時會指定他的型別，如</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">square</span> :: <span class="type">Int</span> -&gt; <span class="type">Int</span></span><br><span class="line"><span class="title">square</span> x = x^<span class="number">2</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
           
-            <p>最近開始啃IOIC的講義，看到第一章最後一題就開始查資料，最後便生出了這麼一篇文。<br>
-本文對遊戲的探討僅限於有限<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>對稱零和完全資訊遊戲。</p>
-<h1 id="遊戲">遊戲</h1>
-<p>關於遊戲的嚴謹定義，我使用的是Lenstra的定義。</p>
-<blockquote>
-<p><strong>遊戲</strong><br>
-一個遊戲就是一個集合。</p>
-</blockquote>
-<p>至於如何遊玩一個集合，我們有如下的定義：</p>
-<blockquote>
-<p><strong>狀態</strong><br>
-狀態\(S\)為可以從狀態\(S\)走到的所有狀態的集合。</p>
-</blockquote>
-<p>而輸家就是無法行動，亦即拿到的集合是\(\varnothing\)。<br>
-於是有限的遊戲就是所有繼承有限集合（Hereditarily finite set），也就是所有屬於\(V(\omega)\)的集合<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>。</p>
-<p>舉個例子，一個個數為\(3\)的Nim<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>（寫作\(Nim(3)\)）就是\(\{\varnothing,\ \{\varnothing\},\ \{\varnothing,\ \{\varnothing\}\}\}\) <sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>。<br>
-稍微看過集合論的讀者會發現這就是馮諾伊曼基數。</p>
-<p>接著定義兩個集合：</p>
-<blockquote>
-<p><strong>後手擁有必勝策略（\(\mathcal{P}\)）</strong><br>
-\(S \in \mathcal{P} \Longleftrightarrow \forall s\in S,\ s \not\in\mathcal{P}\)</p>
-</blockquote>
-<blockquote>
-<p><strong>先手擁有必勝策略（\(\mathcal{N}\)）</strong><br>
-\(S \in \mathcal{N} \Longleftrightarrow \exists s\in S,\ s \not\in\mathcal{N}\)</p>
-</blockquote>
-<p>你會發現\(\mathcal{P}\)與\(\mathcal{N}\)構成\(V(\omega)\)一個劃分，亦即所有集合不屬於\(\mathcal{P}\)就屬於\(\mathcal{N}\)。<br>
-另外由定義也可以看出\(\varnothing\in\mathcal{P}\)，符合上文的描述。</p>
-<h1 id="遊戲和">遊戲和</h1>
-<p>有了以上的定義，我們便可以開始定義遊戲的算術。</p>
-<blockquote>
-<p><strong>遊戲和</strong><br>
-\(S_1+S_2 :=\{s + S_2|s\in S_1 \}\cup\{S_1 + s|s\in S_2 \}\)</p>
-</blockquote>
-<p>用白話文來說，就是將兩個遊戲一起玩，每次選擇一個遊戲並進行一次行動。<br>
-你可以簡單的利用結構歸納法驗證這個定義符合結合律（\(S_1+(S_2+S_3)=(S_1+S_2)+S_3\)）與交換律（\(S_1+S_2=S_2+S_1\)）<br>
-於是\((V(\omega), +)\)構成一個交換么半群（commutative monoid）。</p>
-<p>而有了加法，我們便可以定義外延意義下的等價。</p>
-<blockquote>
-<p><strong>遊戲等價</strong><br>
-\(S_1\sim S_2 \Longleftrightarrow \forall S,\ S_1+S\in\mathcal{P} \Leftrightarrow S_2+S\in\mathcal{P}\)</p>
-</blockquote>
-<p>也就是如果不論加上任何遊戲，輸贏情形都相同，則這兩個遊戲等價。<br>
-你可以簡單的檢驗他符合等價的定義：<br>
-自反性（\(S\sim S\)）、對稱性（\(S_1\sim S_2 \Longleftrightarrow S_2\sim S_1\)）、遞移性（\(S_1\sim S_2 \land S_2\sim S_3 \Longrightarrow S_1\sim S_3\)）</p>
-<p>由以上的定義，你不難發現以下事情</p>
-<blockquote>
-<p>\(s\in\mathcal{P}\Longleftrightarrow S + s \sim S\)</p>
-</blockquote>
-<p>以及</p>
-<blockquote>
-<p>\(S+S\in\mathcal{P}\)</p>
-</blockquote>
-<p>由以上觀察你可以發現，\((V(\omega)/\sim,+,\mathcal{P})\)事實上構成一個指數為\(2\)的交換群。</p>
-<p>以上定義就是為了帶出斯普萊格–格隆第定理：</p>
-<blockquote>
-<p><strong>Sprague-Grundy theorem</strong><br>
-\(\forall S\ \exists n\ [S\sim Nim(n)]\)</p>
-</blockquote>
-<p>也就是所有遊戲等價於一個Nim遊戲。</p>
-<p>證明如下：<br>
-利用結構歸納法，若已知\(S_i\sim Nim(a_i)\)，則我們可以證明<br>
-\[S=\{S_1,\dots,S_k\}\sim S'=\{Nim(a_1),\dots Nim(a_k)\}\sim Nim(m)\]<br>
-其中\(m=\operatorname{mex}\{a_1,\dots,a_k\}\)指的是minimum excluded value，也就是不在此集合裡面的最小的非負整數。</p>
-<p>首先考慮第一個等價：<br>
-\(S\sim S'\)<br>
-\(\Leftrightarrow S+S'\in\mathcal{P}\)<br>
-\(\Leftrightarrow \forall s\in S+S'[s\in\mathcal{N}]\)<br>
-\(\Leftrightarrow \forall s\in S+S'\big[\exists t\in s[t\in\mathcal{P}]\big]\)<br>
-考慮\(s\)的形式。<br>
-若形如\(S+Nim(a_i)\)則取\(t=S_i+Nim(a_i)\)；<br>
-若形如\(S_i+S'\)則一樣取\(t=S_i+Nim(a_i)\)。<br>
-由歸納法前提得知\(t\in\mathcal{P}\)。</p>
-<p>考慮第二個等價：<br>
-\(S'\sim Nim(m)\Leftrightarrow \forall s\in S'+Nim(m)\big[\exists t\in s[t\in\mathcal{P}]\big]\)<br>
-一樣考慮\(s\)的形式：<br>
-若形如\(Nim(a_i)+Nim(m)\)，則根據\(m\)的定義，\(a_i\neq m\)，故可以取\(t = Nim(\min\{a_i,m\}) + Nim(\min\{a_i,m\})\)；<br>
-若形如\(S'+ Nim(m')\)，則由\(m\)的定義得知對於任何\(m'&lt;m\)都有\(Nim(m')\in S'\)，故取\(t = Nim(m') + Nim(m')\)即可。</p>
-<p>起始條件是\(\varnothing=Nim(0)\)，由結構歸納法得證。</p>
-<p>由以上定理證明，可以自然而然定義出一個遊戲的\(SG\)值，亦即跟此遊戲等價的Nim的石頭個數。</p>
-<blockquote>
-<p><strong>Sprauge-Grundy value</strong><br>
-\(SG(S) := \operatorname{mex}\left\{SG(s)|s\in S\right\}\)</p>
-</blockquote>
-<p>於是我們有一個\(V(\omega)\)至非負整數的雙射。</p>
-<blockquote>
-<p><strong>Sprauge-Grundy theorem</strong><br>
-\(SG(S_1+S_2) = SG(S_1)\oplus SG(S_2)\)</p>
-</blockquote>
-<p>若\(k&lt;l-1\)，則<br>
-\(2^{2^l - 1} \otimes x\)<br>
-$ = 2^{2^{l-1} - 1} \otimes 2^{2^{l-1}} \otimes x$<br>
-$ = (2^{2^{l-1} - 1}  \otimes x)\otimes 2^{2^{l-1}}$</p>
-<p>若\(k = l-1\)則<br>
-\(2^{2^l - 1} \otimes x\)<br>
-$ = 2^{2^{l-1} - 1} \otimes 2^{2^{l-1}} \otimes (a\otimes 2^{2^{l-1}} \oplus b)$<br>
-$ = 2^{2^{l-1} - 1} \otimes ( a\otimes 2^{2^{l-1}} \otimes 2^{2^{l-1}} \oplus 2^{2^{l-1}} \otimes b))$<br>
-$ = 2^{2^{l-1} - 1} \otimes ( a\otimes 2^{2^{l-1}} \oplus 2^{2^{l-1}} \otimes b \oplus 2^{2^{l-1}-1} \otimes a)$<br>
-$ = 2^{2^{l-1} - 1} \otimes ( (a\oplus b)\otimes 2^{2^{l-1}} \oplus (2^{2^{l-1}-1} \otimes a))$<br>
-$ = (a\oplus b)\otimes 2^{2^{l-1}} \oplus (2^{2^{l-1} - 1} \otimes 2^{2^{l-1}-1} \otimes a)$</p>
-<p>若\(k > l - 1\)則<br>
-\(2^{2^l - 1} \otimes x\)<br>
-$ = 2^{2^l - 1} \otimes (a\otimes 2^{2^k} \oplus b)$<br>
-$ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
-<hr class="footnotes-sep">
-<section class="footnotes">
-<ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>這個限制其實只是為了讓所有真類都變成集合，方便敘述用的。基本上以下定義與定理中集合與非負整數的部分以真類與基數的適當定義替換還是會對。 <a href="#fnref1" class="footnote-backref">↩</a></p>
-</li>
-<li id="fn2" class="footnote-item"><p>不知道什麼是\(V(\omega)\)的人可以查查馮諾伊曼集合層次，或直接把\(V(\omega)\)當成宇集也行，後面討論不太需要他的性質。 <a href="#fnref2" class="footnote-backref">↩</a></p>
-</li>
-<li id="fn3" class="footnote-item"><p>Nim是一個遊戲如下：兩人面前有一堆石頭，兩人輪流拿取任意顆石頭，拿完者勝利。 <a href="#fnref3" class="footnote-backref">↩</a></p>
-</li>
-<li id="fn4" class="footnote-item"><p>你會發現\(Nim(0)=\varnothing,\ Nim(1)=\{\varnothing\},\ Nim(2)=\{\varnothing, \{\varnothing\}\}\)，因此\(Nim(3)=\{Nim(0),Nim(1),Nim(2)\}=\{\varnothing,\ \{\varnothing\},\ \{\varnothing,\ \{\varnothing\}\}\}\) <a href="#fnref4" class="footnote-backref">↩</a></p>
-</li>
-</ol>
-</section>
-
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/04/28/haskell-functions/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
           
+          <!--/noindex-->
         
       
     </div>
@@ -553,7 +434,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/lambda-calculus/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/haskell-intro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="erd1">
@@ -573,7 +454,156 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/06/26/lambda-calculus/" class="post-title-link" itemprop="url">Haskell簡介[0.5]--關於λ-calculus</a>
+                <a href="/2020/04/28/haskell-intro/" class="post-title-link" itemprop="url">Haskell簡介[1]--Haskell簡介（</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-04-28 00:35:48" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:48+08:00">2020-04-28</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對</p>
+<p>因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？<br>
+預設是<a href="/2020/04/28/haskell-functions/" title="下一篇">下一篇</a>把拉里拉雜的函式語法講完，以及在Prelude<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>裡面的各種神奇資料結構。<br>
+之後就可以開始玩有趣的東西了&gt;&lt;<br>
+不過依照一年一篇的速度不知道那是什麼時候了Q</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2020/04/28/haskell-intro/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/formal-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="erd1">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Erd1 nerd1">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/26/formal-system/" class="post-title-link" itemprop="url">Haskell簡介[0.5.5]--形式系統</a>
               
             
           </h1>
@@ -615,7 +645,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-07-24 17:08:26" itemprop="dateModified" datetime="2019-07-24T17:08:26+08:00">2019-07-24</time>
+                <time title="Modified: 2020-04-28 00:35:38" itemprop="dateModified" datetime="2020-04-28T00:35:38+08:00">2020-04-28</time>
               
             
           </span>
@@ -651,7 +681,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
       
         
           <p>雖然就上一篇的內容，好像FP是最近才被發明的新東西，但事實上FP和OOP都是五零年代的產物。但OOP在八零年代便開始盛行，FP卻一直到最近才開始在商業使用上慢慢出現。在此之前，FP一直都是為了學術討論而開發。以下我們來聊聊FP在學術領域的歷史。</p>
-<p>在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為了這個目的，各種形式系統開始層出不窮。今天我們要提的是以下兩者</p>
+<p>在十九世紀末，數學正在漸漸公理化。從定義出嚴格的一階邏輯的公理、集合論的ZF公理，數學家開始推行著希爾伯特計畫，希望能將數學利用公理系統進行嚴謹的證明。為了這個目的，各種形式系統開始層出不窮。我在本系列會提到的是以下兩者：</p>
 <ul>
 <li><strong>λ演算</strong>(λ-calculus)：三零年代由邱奇(Alonzo Church)提出，進行λ項的建構與歸約。</li>
 <li><strong>組合子邏輯</strong>(Combinatory logic)：五零年代由柯里(Haskell Brooks Curry<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>)提出，將λ演算中的抽象化移除，並用組合子取代。</li>
@@ -659,7 +689,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/06/26/lambda-calculus/#more" rel="contents">
+              <a class="btn" href="/2019/06/26/formal-system/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1074,7 +1104,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1103,7 +1133,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">tags</span>
                   
                 </div>
@@ -1145,7 +1175,7 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -1290,6 +1320,8 @@ $ = ((2^{2^l - 1} \otimes a)\otimes 2^{2^k} \oplus (2^{2^l - 1} \otimes b))$</p>
 
   
   
+    
+      
     
       
         

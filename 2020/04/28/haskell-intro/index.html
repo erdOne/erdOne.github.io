@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對 因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？ 預設是下一篇把拉里拉雜的函式語法講完，以及在Prelude[1]裡面的各種神奇資料結構。 之後就可以開始玩有趣的東西了&amp;gt;&amp;lt; 不過依照一年一篇的速度不知道那是什麼時候了Q">
+<meta name="keywords" content="CS,haskell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Haskell簡介[1]--Haskell簡介（">
+<meta property="og:url" content="http://yoursite.com/2020/04/28/haskell-intro/index.html">
+<meta property="og:site_name" content="Erd1 nerd1">
+<meta property="og:description" content="balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對 因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？ 預設是下一篇把拉里拉雜的函式語法講完，以及在Prelude[1]裡面的各種神奇資料結構。 之後就可以開始玩有趣的東西了&amp;gt;&amp;lt; 不過依照一年一篇的速度不知道那是什麼時候了Q">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:image" content="https://www.haskell.org/onlinereport/haskell2010/haskell2x.png">
+<meta property="og:image" content="http://s3.amazonaws.com/lyah/listmonster.png">
+<meta property="og:updated_time" content="2020-04-27T16:35:48.208Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Haskell簡介[1]--Haskell簡介（">
+<meta name="twitter:description" content="balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對 因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？ 預設是下一篇把拉里拉雜的函式語法講完，以及在Prelude[1]裡面的各種神奇資料結構。 之後就可以開始玩有趣的東西了&amp;gt;&amp;lt; 不過依照一年一篇的速度不知道那是什麼時候了Q">
+<meta name="twitter:image" content="https://www.haskell.org/onlinereport/haskell2010/haskell2x.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/04/28/haskell-intro/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Haskell簡介[1]--Haskell簡介（ | Erd1 nerd1</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Erd1 nerd1</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/haskell-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="erd1">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Erd1 nerd1">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Haskell簡介[1]--Haskell簡介（
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-04-28 00:35:48" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:48+08:00">2020-04-28</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>balbit說模考前應該耍廢，所以我就暫停做題然後熬夜打了這篇。（等等好像哪裡不太對</p>
+<p>因為想要趕快進入有趣的地方，所以把入門的東西通通塞進來了，不過對初學者而言這樣應該就足夠玩很久了？<br>
+預設是<a href="/2020/04/28/haskell-functions/" title="下一篇">下一篇</a>把拉里拉雜的函式語法講完，以及在Prelude<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>裡面的各種神奇資料結構。<br>
+之後就可以開始玩有趣的東西了&gt;&lt;<br>
+不過依照一年一篇的速度不知道那是什麼時候了Q</p>
+<a id="more"></a>
+<h1 id="環境設定">環境設定</h1>
+<p>想在本地編譯Haskell程式請安裝 <abbr title="gnu haskell compiler">ghc</abbr>。內有編譯器(<abbr title="gnu haskell compiler">ghc</abbr>)以及直譯器(<abbr title="gnu haskell compiler interpreter">ghci</abbr>)。</p>
+<h1 id="型別">型別</h1>
+<p>Haskell是個強型別語言，以下是幾種常見的型別:</p>
+<ul>
+<li><code>Int</code>： 有界的整數。一般是\(-2^{31}\) ～ \(2^{31}-1\)。</li>
+<li><code>Integer</code>： 大數</li>
+<li><code>Char</code>： 字元</li>
+<li><code>Float</code> <code>Double</code>： 浮點數</li>
+<li><code>Bool</code>： 布林值（<code>True</code>與<code>False</code>）</li>
+<li><code>(a, b)</code>：　tuple，其中<code>a</code>,<code>b</code>都是型別。當然也有更長的tuple。</li>
+<li><code>()</code>：　可以視為長度為\(0\)的tuple，也可以視為<code>void</code>。</li>
+<li><code>[a]</code>：　串列(list)。只支援\(O(k)\) 存取第\(k\)個元素。</li>
+<li><code>String</code>： 字串。事實上是<code>[Char]</code>的語法糖。</li>
+<li><code>a -&gt; b</code>：從型別<code>a</code>打到型別<code>b</code>的函數。</li>
+</ul>
+<p>以上應該包含了大部份預設宣告的型別。而在下下一篇會提到，如何在haskell中定義型別。<br>
+若想在ghci中看到某個expression的型別<br>
+可以打<code>:t Expression</code>。<br>
+直譯器會顯示<code>Expression :: Type</code></p>
+<h1 id="型別類別-typeclass">型別類別(Typeclass)</h1>
+<p>當只打一個數字<code>2</code>時，Haskell並不知道它代表的是<code>Int</code>還是<code>Integer</code>或甚至是<code>Float</code>。所以Haskell引入型別類別的概念。透過型別類別可以在強型別語言中達到重載(overload)的效果。<br>
+以下舉例一些預設宣告的型別類別：</p>
+<ul>
+<li><code>Num</code>：可以做加法減法乘法的東西</li>
+<li><code>Show</code>：可以變成字串印出的東西</li>
+<li><code>Fractional</code>：可以做除法的東西</li>
+<li><code>Integral</code>：整數</li>
+<li><code>Floating</code>：浮點數</li>
+<li><code>Ord</code>：可以比大小的東西</li>
+<li><code>Real</code>：又是<code>Num</code>又是<code>Ord</code>的東西</li>
+</ul>
+<p>讀者應該發現了，不同的型別類別有著從屬的關係。<br>
+詳細的從屬關係可以看這張haskell官網的圖片：<br>
+<img src="https://www.haskell.org/onlinereport/haskell2010/haskell2x.png" alt><br>
+這些就是所有預設宣告的型別與型別類別。<br>
+尚未提及的型別與型別類別應該會在下幾篇提到。<br>
+以下來看幾個ghci的範例</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Prelude</span>&gt; :t <span class="number">2</span></span><br><span class="line"><span class="number">2</span> :: <span class="type">Num</span> t =&gt; t</span><br><span class="line"></span><br><span class="line"><span class="type">Prelude</span>&gt; :t <span class="number">4</span>/<span class="number">2</span></span><br><span class="line"><span class="number">4</span>/<span class="number">2</span> :: <span class="type">Fractional</span> t =&gt; t</span><br><span class="line"></span><br><span class="line"><span class="type">Prelude</span>&gt; :t (<span class="number">2</span>::<span class="type">Integer</span>)</span><br><span class="line">(<span class="number">2</span>::<span class="type">Integer</span>) :: <span class="type">Integer</span></span><br><span class="line"></span><br><span class="line"><span class="type">Prelude</span>&gt; :t (<span class="number">2</span> :: <span class="type">Real</span> a =&gt; a)</span><br><span class="line">(<span class="number">2</span> :: <span class="type">Real</span> a =&gt; a) :: <span class="type">Real</span> a =&gt; a</span><br><span class="line"></span><br><span class="line"><span class="type">Prelude</span>&gt; :t max</span><br><span class="line"><span class="title">max</span> :: <span class="type">Ord</span> a =&gt; a -&gt; a -&gt; a</span><br><span class="line"></span><br><span class="line"><span class="type">Prelude</span>&gt; :t max <span class="number">1</span> <span class="number">2</span></span><br><span class="line"><span class="title">max</span> <span class="number">1</span> <span class="number">2</span> :: (<span class="type">Num</span> a, <span class="type">Ord</span> a) =&gt; a</span><br></pre></td></tr></table></figure>
+<p><code>Num t =&gt; t</code>表示<code>2</code>的型別是<code>t</code>，且<code>t</code>必須是<code>Num</code>的一種<br>
+而<code>4/2</code>不但是一個<code>Num</code>，它還要是一個可以做除法的<code>Fractional</code>。<br>
+當想要直接指定型別時，可以使用<code>::</code>接在表達式的後面。<br>
+<code>max</code>的型別是<code>a -&gt; a -&gt; a</code>，表示他是一個接收兩個<code>a</code>並回傳一個<code>a</code>的函數（請見 <a href="/2019/06/25/haskell-fp/" title="前篇">前篇</a> 的Currying），並要求<code>a</code>要是可以比大小的<code>Ord</code>。<br>
+而當一個型別被要求屬於不只一個型別類別時，會用逗點隔開並用小括號括住。</p>
+<h1 id="常見函式介紹">常見函式介紹</h1>
+<p>記得去ghci把每個都用用看喔，也可以看看他看他的型別，看這些函式是定義在哪些型別/型別類別上</p>
+<h2 id="運算相關">運算相關</h2>
+<ul>
+<li><code>(+)</code> <code>(-)</code> <code>(*)</code>：加、減、乘法。</li>
+<li><code>(/)</code>：小數除法。</li>
+<li><code>div</code>：整數除法。 <code>div a b</code> 表示 <code>a/b</code>。 另外haskell有提供語法糖讓<code>a `div` b</code>表示<code>div a b</code></li>
+<li><code>mod</code>：整數除法取餘。 大部分寫作 <code>a `mod` b</code></li>
+<li><code>(^)</code>：次方運算。</li>
+<li><code>(==)</code> <code>(/=)</code>：等於與不等於。注意不等於與其他語言的寫法不同</li>
+<li><code>(&gt;=)</code> <code>(&gt;)</code> <code>(&lt;=)</code> <code>(&lt;)</code>：不等號們。</li>
+<li><code>(&amp;&amp;)</code> <code>(||)</code>：和、或。</li>
+<li><code>not</code>：邏輯非。</li>
+<li><code>min</code> <code>max</code>：取較小或較大者。</li>
+<li><code>succ</code> <code>pred</code>：下一個或上一個（定義在<code>Enum</code>的型別類別。對大部分型別而言是<code>+1</code>與<code>-1</code>）。</li>
+<li><code>fromIntegral</code>：把<code>Integral</code>的東西換成其他型別</li>
+</ul>
+<h2 id="串列相關">串列相關</h2>
+<ul>
+<li><code>length</code>：串列長度。</li>
+<li><code>null</code>：檢查串列是否為空。</li>
+<li><code>(!!)</code>：取第<code>k</code>個元素（<code>x !! k</code>）。</li>
+<li><code>elem</code>：判斷<code>a</code>是否在<code>x</code>中（<code>a `elem` x</code>）。</li>
+<li><code>(++)</code>：連接兩個串列</li>
+<li><code>(:)</code>： 將元素接到串列的前端（<code>1:[2,3] = [1,2,3]</code>）。</li>
+<li><code>head</code>：第一個元素。</li>
+<li><code>tail</code>：第一個以外的元素。</li>
+<li><code>last</code>：最後一個元素。</li>
+<li><code>init</code>：最後一個以外的元素。偷<a href="http://learnyouahaskell.com" target="_blank" rel="noopener">learn you a haskell</a>的圖來說明就是<br>
+<img src="http://s3.amazonaws.com/lyah/listmonster.png" alt></li>
+<li><code>reverse</code>：反轉串列。</li>
+<li><code>take n x</code>：取<code>x</code>的前<code>n</code>項。</li>
+<li><code>drop n x</code>：丟掉<code>x</code>的前<code>n</code>項並回傳剩下的。</li>
+<li><code>map f x</code>：將<code>f</code>作用在<code>x</code>的每個元素並回傳結果串列。</li>
+<li><code>filter p x</code>：將<code>x</code>中所有滿足<code>p</code>的留下</li>
+<li><code>replicate n x</code>：將<code>x</code>重複<code>n</code>次形成的串列</li>
+</ul>
+<h2 id="其他">其他</h2>
+<ul>
+<li><code>fst</code> <code>snd</code>：長度為\(2\)的tuple的第一與第二項。</li>
+<li><code>curry</code> <code>uncurry</code>：將<code>(a, b) -&gt; c</code>與 <code>a -&gt; b -&gt; c</code>互相轉換。</li>
+<li><code>show</code> <code>read</code>：轉成字串與從字串轉回來。</li>
+<li><code>lines</code> <code>words</code>：對<code>\n</code>或<code></code>分割字串。</li>
+<li><code>unlines</code> <code>unwords</code>：用<code>\n</code>或<code></code>合併字串串列。</li>
+<li><code>id</code>：恆等函數（<code>id x = x</code>）。</li>
+<li><code>const a</code>：恆回傳<code>a</code>的常數函數（<code>const a b = a</code>）。</li>
+<li><code>flip f</code>：交換二元函數的兩個參數(<code>flip f a b = f b a</code>)</li>
+<li><code>($)</code>：函數使用。<code>f $ x = f x</code><sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>。</li>
+<li><code>(.)</code>：函數合成。<code>(f.g) x = f (g x) = f $ g x</code></li>
+</ul>
+<h2 id="折疊">折疊</h2>
+<p>折疊(fold)是函式編成的一個重要特性，因此單獨抓出來講。<br>
+所謂折疊只是依序對串列中的每個元素做運算，得到的結果再與下一個元素做運算。<br>
+例如<code>foldl (+) 0 [1,2,3,4]</code>就會執行<code>((((0+1)+2)+3)+4)</code>得到<code>10</code>。<br>
+其中<code>foldl</code>的l指的是從左到右。當然還有從右到左的<code>foldr</code>。若想直接從串列的前兩個或後兩個開始運算而不傳入初始值，可以使用<code>foldl1</code>與<code>foldr1</code>。<br>
+而若想要過程中的每個結果，可以使用<code>scanl</code>與<code>scanr</code>。<br>
+讀者可以看看以上每個函數的型別，是否跟想像一樣？<br>
+除此之外， Haskell也有預設定義一些<code>fold</code>，例如</p>
+<ul>
+<li><code>sum = foldl1 (+)</code></li>
+<li><code>product = foldl1 (*)</code></li>
+<li><code>and = foldl1 (&amp;&amp;)</code></li>
+<li><code>or = foldl1 (||)</code></li>
+<li><code>concat = foldl1 (++)</code></li>
+<li><code>maximum = foldl1 max</code></li>
+<li><code>minimum = foldl1 min</code></li>
+</ul>
+<h1 id="更多語言特性">更多語言特性</h1>
+<p>透過上一篇文章提到的語言特性，我們可以作到各式各樣的事情。</p>
+<h2 id="部份使用-partial-application">部份使用(Partial application)</h2>
+<p>所謂部份使用，就是將一個多參數函式的某幾個參數固定，類似JS的<code>bind</code>。<br>
+例如如果<code>f x = max 0 x</code>，那<code>f</code>就是吃進一個數字，回傳它和<code>0</code>中較大的那個，也就是將<code>max</code>部份使用到<code>0</code>身上。<br>
+而由於Haskell的函式是Currified的，因此<code>f = max 0</code>即可，畢竟<code>max</code>本質上就是一個<code>a -&gt; (a -&gt; a)</code>的函式。<br>
+讀者可以檢查一下<code>max 0</code>的型別。它的確是一個<code>Ord a =&gt; a -&gt; a</code>的函式。<br>
+而Haskell又提供對於運算子的語法糖，使<code>(+3)</code>、<code>(2*)</code>和<code>(`mod` 3 + 2)</code>可以直接代表部份使用後的運算子，稱為部份運算子(operator section)，這些都會是一個<code>Num a =&gt; a -&gt; a</code>的函式。</p>
+<h2 id="範圍表達式-range-expression">範圍表達式(Range expression)</h2>
+<p>haskell對屬於<code>Enum</code>這個型別類別的型別提供了兩種（包含後面的無限串列共四種）範圍表達式。<br>
+<code>[1..10]</code>代表<code>[1,2,3,4,5,6,7,8,9,10]</code>，而<code>[1,3..10]</code>代表<code>[1,3,5,7,9]</code>。<br>
+縱使<code>Float</code>屬於<code>Enum</code>，但因為浮點數誤差，還是不建議使用範圍表達式，否則會造成意想不到的結果，例如讀者可以在ghci試試看<code>[0.1, 0.3 ..1.0]</code>會是什麼</p>
+<h2 id="串列生成-list-comprehension">串列生成(List comprehension)</h2>
+<p>串列生成是一個能夠簡單生出一個串列的語法糖。<br>
+例如<code>[i*j | i &lt;- [1..10], j &lt;- [1..10]]</code>就是<code>concat $ map (\i -&gt; map (\j -&gt; i*j) [1..10]) [1..10]</code>的語法糖。<br>
+而在串列生成時也可以做篩選(<code>filter</code>)，例如</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Prelude</span>&gt; [(i, j)|i&lt;-[<span class="number">1.</span><span class="number">.10</span>], j&lt;-[<span class="number">1.</span><span class="number">.10</span>], i + j == <span class="number">10</span>]</span><br><span class="line">[(<span class="number">1</span>,<span class="number">9</span>),(<span class="number">2</span>,<span class="number">8</span>),(<span class="number">3</span>,<span class="number">7</span>),(<span class="number">4</span>,<span class="number">6</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">4</span>),(<span class="number">7</span>,<span class="number">3</span>),(<span class="number">8</span>,<span class="number">2</span>),(<span class="number">9</span>,<span class="number">1</span>)]</span><br></pre></td></tr></table></figure>
+<h2 id="無限串列">無限串列</h2>
+<p>由於Haskell的懶惰求值，我們可以定義無限串列。<br>
+當使用範圍表答式時，其實可以不定義範圍的結束在哪裡，也就是寫<code>[1..]</code>。<br>
+但記得不要在ghci打上這個。當在ghci打上這串時，事實上就是對它呼叫<code>show</code>並把結果印出。對無限串列呼叫<code>show</code>的結果就是它會塞爆你的螢幕。<br>
+而無限串列能讓程式碼簡單許多。若要取得前\(10\)個平方數，就只要<code>take 10 (map (^2) [1..])</code>就好。是不是比結構式程式設計來的簡單許多呢&gt;&lt;<br>
+另外，Haskell也有預設定義一些能夠生成無限串列的函式。例如</p>
+<ul>
+<li><code>iterate f x</code>：<code>[x, f x, f (f x), ...]</code></li>
+<li><code>repeat x</code>：<code>[x, x, x, ...]</code></li>
+<li><code>cycle</code>：將某個串列不斷重複。</li>
+</ul>
+<h1 id="後語">後語</h1>
+<p>基本上這次就這樣啦。基礎介紹的很大一部份是參考<a href="http://learnyouahaskell.com" target="_blank" rel="noopener">learn you a haskell for great good</a>，畢竟我的Haskell也是在上面學的。如果想深入看看Prelude有哪些東西，也可以上<a href="https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html" target="_blank" rel="noopener">hackage</a>看看。<br>
+讀者試一試會發現，上面的函式已經能夠弄出很複雜很炫泡的東西了，<br>
+例如什麼是<code>flip const const</code>？<br>
+什麼又是<code>curry fst</code>？<br>
+什麼又是<code>((not.).(null.).filter.(==))</code>？<br>
+從型別應該就可以略知一二了。</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Prelude就是haskell會預設載入的模組 <a href="#fnref1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>你可能會覺得很莫名其妙，但是它是有存在的價值的。<br>
+<code>($)</code>的優先度很低，而且是右至左，因此可以將<code>f (g (h x))</code>改寫成<code>f $ g $ h x</code>。<br>
+而使用稍後會介紹的operator section的語法更可以做到許多對高級函數的操作 <a href="#fnref2" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/CS/" rel="tag"># CS</a>
+          
+            <a href="/tags/haskell/" rel="tag"># haskell</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/26/formal-system/" rel="next" title="Haskell簡介[0.5.5]--形式系統">
+                <i class="fa fa-chevron-left"></i> Haskell簡介[0.5.5]--形式系統
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/28/haskell-functions/" rel="prev" title="Haskell簡介[2]--函式的宣告與各種語法">
+                Haskell簡介[2]--函式的宣告與各種語法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">erd1</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#環境設定"><span class="nav-number">1.</span> <span class="nav-text">環境設定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#型別"><span class="nav-number">2.</span> <span class="nav-text">型別</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#型別類別-typeclass"><span class="nav-number">3.</span> <span class="nav-text">型別類別(Typeclass)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常見函式介紹"><span class="nav-number">4.</span> <span class="nav-text">常見函式介紹</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#運算相關"><span class="nav-number">4.1.</span> <span class="nav-text">運算相關</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#串列相關"><span class="nav-number">4.2.</span> <span class="nav-text">串列相關</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">4.3.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#折疊"><span class="nav-number">4.4.</span> <span class="nav-text">折疊</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多語言特性"><span class="nav-number">5.</span> <span class="nav-text">更多語言特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#部份使用-partial-application"><span class="nav-number">5.1.</span> <span class="nav-text">部份使用(Partial application)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#範圍表達式-range-expression"><span class="nav-number">5.2.</span> <span class="nav-text">範圍表達式(Range expression)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#串列生成-list-comprehension"><span class="nav-number">5.3.</span> <span class="nav-text">串列生成(List comprehension)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#無限串列"><span class="nav-number">5.4.</span> <span class="nav-text">無限串列</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#後語"><span class="nav-number">6.</span> <span class="nav-text">後語</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">erd1</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

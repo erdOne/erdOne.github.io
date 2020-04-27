@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="喔呼連續發兩篇文呢&amp;gt;&amp;lt; 在這篇文中主要會介紹定義函式時會使用的語法 然後這應該是最後一篇單純介紹語法的Haskell簡介了&amp;gt;&amp;lt; 函式定義 在Haskell中定義函式的方法很簡單，例如若要定義一個平方函式，只要square x = x^2即可。 注意Haskell的函數必須是小寫字母開頭，而大寫字母開頭的東西被留給型別的建構子。 一般而言為了避免一些不必要的問題，在寫函式時會">
+<meta name="keywords" content="CS,haskell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Haskell簡介[2]--函式的宣告與各種語法">
+<meta property="og:url" content="http://yoursite.com/2020/04/28/haskell-functions/index.html">
+<meta property="og:site_name" content="Erd1 nerd1">
+<meta property="og:description" content="喔呼連續發兩篇文呢&amp;gt;&amp;lt; 在這篇文中主要會介紹定義函式時會使用的語法 然後這應該是最後一篇單純介紹語法的Haskell簡介了&amp;gt;&amp;lt; 函式定義 在Haskell中定義函式的方法很簡單，例如若要定義一個平方函式，只要square x = x^2即可。 注意Haskell的函數必須是小寫字母開頭，而大寫字母開頭的東西被留給型別的建構子。 一般而言為了避免一些不必要的問題，在寫函式時會">
+<meta property="og:locale" content="zh-tw">
+<meta property="og:updated_time" content="2020-04-27T16:35:55.676Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Haskell簡介[2]--函式的宣告與各種語法">
+<meta name="twitter:description" content="喔呼連續發兩篇文呢&amp;gt;&amp;lt; 在這篇文中主要會介紹定義函式時會使用的語法 然後這應該是最後一篇單純介紹語法的Haskell簡介了&amp;gt;&amp;lt; 函式定義 在Haskell中定義函式的方法很簡單，例如若要定義一個平方函式，只要square x = x^2即可。 注意Haskell的函數必須是小寫字母開頭，而大寫字母開頭的東西被留給型別的建構子。 一般而言為了避免一些不必要的問題，在寫函式時會">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/04/28/haskell-functions/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Haskell簡介[2]--函式的宣告與各種語法 | Erd1 nerd1</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Erd1 nerd1</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/haskell-functions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="erd1">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Erd1 nerd1">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Haskell簡介[2]--函式的宣告與各種語法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-04-28 00:35:55" itemprop="dateCreated datePublished" datetime="2020-04-28T00:35:55+08:00">2020-04-28</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>喔呼連續發兩篇文呢&gt;&lt;<br>
+在這篇文中主要會介紹定義函式時會使用的語法<br>
+然後這應該是最後一篇單純介紹語法的Haskell簡介了&gt;&lt;</p>
+<h1 id="函式定義">函式定義</h1>
+<p>在Haskell中定義函式的方法很簡單，例如若要定義一個平方函式，只要<code>square x = x^2</code>即可。<br>
+注意Haskell的函數必須是小寫字母開頭，而大寫字母開頭的東西被留給型別的建構子。<br>
+一般而言為了避免一些不必要的問題，在寫函式時會指定他的型別，如</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">square</span> :: <span class="type">Int</span> -&gt; <span class="type">Int</span></span><br><span class="line"><span class="title">square</span> x = x^<span class="number">2</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>注意：要在ghci打入多行程式時，需要在開頭結尾分別用<code>:{</code>與<code>:}</code>包住。注意兩個都要各佔一行。</p>
+<p>Haskell也支援這種寫法</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">fib</span> :: <span class="type">Int</span> -&gt; <span class="type">Int</span></span><br><span class="line"><span class="title">fib</span> <span class="number">0</span> = <span class="number">0</span></span><br><span class="line"><span class="title">fib</span> <span class="number">1</span> = <span class="number">1</span></span><br><span class="line"><span class="title">fib</span> x = (fib (x<span class="number">-1</span>)) + (fib (x<span class="number">-2</span>))</span><br></pre></td></tr></table></figure>
+<p>每次呼叫<code>fib</code>，Haskell會由上至下看看那一個符合參數的樣子（也就是模式匹配, pattern matching），並執行第一個符合的定義。但是這些定義必須要一次寫完，中間不能空行，更不能在程式碼的另外一個地方把定義補完。<br>
+多引數時也是一樣。以下我們來試圖自己實做<code>take</code>函式，稱為<code>take'</code><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">take'</span> :: <span class="type">Int</span> -&gt; [a] -&gt; [a]</span><br><span class="line"><span class="title">take'</span> _ [] = []</span><br><span class="line"><span class="title">take'</span> <span class="number">0</span>  _ = []</span><br><span class="line"><span class="title">take'</span> x y  = (head y):(take' (x<span class="number">-1</span>) $ tail y)</span><br></pre></td></tr></table></figure>
+<p>其中<code>_</code>的意思就是我們不在乎那個參數的值。</p>
+<h2 id="運算子">運算子</h2>
+<p>另外，運算子也可以用同樣的方法被定義。若一個函式的名稱僅由符號組成，那它就是一個運算子。例如</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(.*.) :: [a] -&gt; [b] -&gt; [(a, b)]</span><br><span class="line">(.*.) a b = [(i, j) | i &lt;- a, j &lt;- b]</span><br></pre></td></tr></table></figure>
+<p>接著不論是運算子，或是以<code>`function`</code>定義的中綴函數，都可被定義是左結合或右結合，以及他的優先度(fixity)。優先度由<code>0</code>至<code>9</code>，越高者越先被計算。<br>
+語法是<code>[infix|infixr|infixl] (fixity) op</code>，例如<code>infix 3 (.*.)</code>或是<code>infixl `op`</code>。<br>
+預設的運算子是<code>infixl 9</code>，而預設的中綴函數是<code>infix 9</code>。</p>
+<p>以上這種定義函數的方法其實是λ函式的語法糖。</p>
+<h2 id="λ函式">λ函式</h2>
+<p>所謂λ函式就是inline function。<br>
+語法是<code>square = \x -&gt; x^2</code>。或是加上型別是<code>square = (\x -&gt; x^2)::Int -&gt; Int</code>。<br>
+那個<code>\</code>就是λ的意思<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>。<br>
+當然也可以有多變數函數<code>add = \x -&gt; \y -&gt; x + y</code>。<br>
+或是語法糖可以讓它簡化成<code>\x y -&gt; x + y</code>。</p>
+<h1 id="常用語法">常用語法</h1>
+<h2 id="let-in"><code>let ... in</code></h2>
+<p>用法是<code>let x = 3 in x * x</code>，是<code>(\x -&gt; x * x) 3</code>的語法糖。<br>
+在<code>let ... in</code>中也可以定義函式。如<code>let square x = x*x in square 3</code>。<br>
+或甚至可以定義多於一個函式<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>，如</p>
+ <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">let</span> y = <span class="number">3</span></span><br><span class="line">    square x = x*x</span><br><span class="line"><span class="title">in</span> square y</span><br></pre></td></tr></table></figure>
+<p>注意那個縮排<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>。<br>
+在<code>let ... in</code>中還可以做模式匹配，但如果無法匹配時就會丟出錯誤。<br>
+如<code>let (a, b) = p in a + b</code>就是把二元組的兩個元素相加。</p>
+<h2 id="守衛子句與where">守衛子句與<code>where</code></h2>
+<p>除了以上的寫法，有時我們需要定義一些能橫跨不同定義的函式。這時就可以使用守衛子句的寫法。以<code>atan2</code>為例：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">atan2</span> :: <span class="type">Float</span> -&gt;　<span class="type">Float</span> -&gt; <span class="type">Float</span></span><br><span class="line"><span class="title">atan2</span> y x</span><br><span class="line">  | x &gt; <span class="number">0</span> = angle</span><br><span class="line">  | (x &lt; <span class="number">0</span>) &amp;&amp; (y &gt;= <span class="number">0</span>) = angle + pi</span><br><span class="line">  | (x &lt; <span class="number">0</span>) &amp;&amp; (y &lt; <span class="number">0</span>) = angle - pi</span><br><span class="line">  | y &gt; <span class="number">0</span> = pi / <span class="number">2</span></span><br><span class="line">  | y &lt; <span class="number">0</span> = - pi / <span class="number">2</span></span><br><span class="line">  | otherwise = undefined</span><br><span class="line">  <span class="keyword">where</span> angle = atan (y / x)</span><br></pre></td></tr></table></figure>
+<p>在這裡<code>otherwise</code>是為了讓守衛子句比較清楚而在Prelude定義為<code>True</code>，<code>undefined</code>是一個當被執行就會丟出錯誤的函式。</p>
+<h2 id="if-then-else"><code>if ... then ... else</code></h2>
+<p>正常的三元運算子。例如<code>even x = if (x `mod` 2) == 1 then False else True</code>。</p>
+<h2 id="case-of"><code>case ... of</code></h2>
+<p>當想要在函式的其他地方進行模式匹配使得不同模式會有不同結果時，可以使用<code>case ... of</code>。 例如</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">say</span> :: <span class="type">Int</span> -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">say</span> i = <span class="string">"You are the "</span> ++ (show i) ++ (</span><br><span class="line">    <span class="keyword">case</span> i <span class="keyword">of</span></span><br><span class="line">        <span class="number">1</span> -&gt; <span class="string">"st"</span></span><br><span class="line">        <span class="number">2</span> -&gt; <span class="string">"nd"</span></span><br><span class="line">        <span class="number">3</span> -&gt; <span class="string">"rd"</span></span><br><span class="line">        x -&gt; <span class="string">"th"</span></span><br><span class="line">    ) ++ <span class="string">"."</span></span><br></pre></td></tr></table></figure>
+<h2 id="舉例">舉例</h2>
+<p>讀者可以比較一下以上幾種不同的語法實際寫起來有什麼不同<br>
+(在這裡偷一下learn you a haskell的例子)：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">describeList</span> :: [a] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">describeList</span> []  = <span class="string">"The list is empty."</span></span><br><span class="line"><span class="title">describeList</span> [x] = <span class="string">"The list is a singleton list."</span></span><br><span class="line"><span class="title">describeList</span> xs  = <span class="string">"The list is a longer list."</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">describeList</span> :: [a] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">describeList</span> xs = <span class="string">"The list is "</span> ++</span><br><span class="line">  <span class="keyword">if</span> null xs</span><br><span class="line">    <span class="keyword">then</span> <span class="string">"empty."</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (length xs) == <span class="number">1</span></span><br><span class="line">    <span class="keyword">then</span> <span class="string">"a singleton list."</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="string">"a longer list."</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">describeList</span> :: [a] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">describeList</span> xs = <span class="string">"The list is "</span> ++ what xs</span><br><span class="line">    <span class="keyword">where</span> what []  = <span class="string">"empty."</span></span><br><span class="line">          what [x] = <span class="string">"a singleton list."</span></span><br><span class="line">          what xs  = <span class="string">"a longer list."</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">describeList</span> :: [a] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">describeList</span> xs = <span class="string">"The list is "</span> ++ <span class="keyword">case</span> xs <span class="keyword">of</span></span><br><span class="line">   []  -&gt; <span class="string">"empty."</span></span><br><span class="line">   [x] -&gt; <span class="string">"a singleton list."</span></span><br><span class="line">   xs  -&gt; <span class="string">"a longer list."</span></span><br></pre></td></tr></table></figure>
+<h2 id="結語">結語</h2>
+<p>這次就先到這裡了，下次開始會進入有趣的內容唷&gt;&lt;<br>
+敬請期待～<br>
+喔然後有錯的話請來敲我&gt;&lt; 八成錯誤百出QQ</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>haskell的取名是可以包含<code>'</code>的喔 <a href="#fnref1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>聽說長得很像 <a href="#fnref2" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>對haskell而言，常數其實就是沒有參數的函式 <a href="#fnref3" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>Haskell的縮排規則很簡單，只要將同一level的東西對齊即可。例如這裡的定義們，或是之後守衛子句或<code>case ... of</code>的cases也都需要對齊。<br>
+另外，也可以使用大括號和分號來忽略縮排，例如<code>let { y = 3; square x = x * x } in square y</code>。一個分號代表一個換行。 <a href="#fnref4" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/CS/" rel="tag"># CS</a>
+          
+            <a href="/tags/haskell/" rel="tag"># haskell</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/28/haskell-intro/" rel="next" title="Haskell簡介[1]--Haskell簡介（">
+                <i class="fa fa-chevron-left"></i> Haskell簡介[1]--Haskell簡介（
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">erd1</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#函式定義"><span class="nav-number">1.</span> <span class="nav-text">函式定義</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#運算子"><span class="nav-number">1.1.</span> <span class="nav-text">運算子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#λ函式"><span class="nav-number">1.2.</span> <span class="nav-text">λ函式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用語法"><span class="nav-number">2.</span> <span class="nav-text">常用語法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#let-in"><span class="nav-number">2.1.</span> <span class="nav-text">let ... in</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守衛子句與where"><span class="nav-number">2.2.</span> <span class="nav-text">守衛子句與where</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#if-then-else"><span class="nav-number">2.3.</span> <span class="nav-text">if ... then ... else</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-of"><span class="nav-number">2.4.</span> <span class="nav-text">case ... of</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#舉例"><span class="nav-number">2.5.</span> <span class="nav-text">舉例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#結語"><span class="nav-number">2.6.</span> <span class="nav-text">結語</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">erd1</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
